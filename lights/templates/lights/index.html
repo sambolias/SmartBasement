@@ -1,4 +1,5 @@
 <h3>Hello buddy</h3>
-<form method="POST" action="{% url 'lights:index' %}">
+<form method="POST" action="{% url ':index' %}">
+    {% csrf_token %}
     <input type="submit"/>
 </form>
