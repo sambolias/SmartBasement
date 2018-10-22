@@ -1,5 +1,7 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
 def index(request):
-    return HttpResponse("We got a basic ass page!")
+    context = {}
+    return render(request, 'lights/index.html', context)
