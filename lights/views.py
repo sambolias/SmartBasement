@@ -8,5 +8,5 @@ def index(request):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(4, GPIO.OUT)
         GPIO.output(4, not GPIO.input(4))
-        GPIO.cleanup()
+        # GPIO.cleanup()
     return render(request, 'lights/index.html', context)
