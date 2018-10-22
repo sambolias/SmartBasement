@@ -8,5 +8,8 @@ def index(request):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(4, GPIO.OUT)
         GPIO.output(4, not GPIO.input(4))
-        GPIO.cleanup()
+        #only close resource when it goes off
+        #otherwise it won't stay on
+        if GPIO.input(4) == GPIO.LOW:
+            GPIO.cleanup()
     return render(request, 'lights/index.html', context)
