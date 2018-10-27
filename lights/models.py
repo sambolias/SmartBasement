@@ -19,11 +19,13 @@ GPIO.setup(gpio.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
 def toggle_on(channel):
+    gpio = Device.objects.filter(name="office_lightswitch")
     gpio.toggle = True
     gpio.save()
 
 
 def toggle_off(channel):
+    gpio = Device.objects.filter(name="office_lightswitch")
     # wait to see if it stays off (or was slight voltage drop)
     sleep(.5)
     if GPIO.input(gpio.pin) == GPIO.LOW:
