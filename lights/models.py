@@ -13,7 +13,7 @@ class Device(models.Model):
 
 
 # seems like as good a place as any to connect listener
-gpio = Device.objects.filter(name="office_lightswitch")
+gpio = Device.objects.filter(name="office_lightswitch").first()
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(gpio.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
