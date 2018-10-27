@@ -9,7 +9,7 @@ def index(request):
     from time import sleep
     gpio = Device.objects.filter(name="office_lightswitch").first()
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(gpio.pin, GPIO.IN)
+    GPIO.setup(gpio.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     msg = str(GPIO.input(gpio.pin))+' Volts for pin '+str(gpio.pin)
 
     def toggle_on(channel):
@@ -24,7 +24,7 @@ def index(request):
             gpio.save()
 
     GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on)
-    GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
+    # GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
 
     light = Device.objects.filter(name='office_lights').first()
     error = False
