@@ -31,5 +31,5 @@ def toggle_off(channel):
         gpio.save()
 
 
-GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on, bouncetime=1)
-GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off, bouncetime=1)
+GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on)
+GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
