@@ -1,10 +1,11 @@
 import RPi.GPIO as GPIO
 from lights.models import Device
 
+
 # TODO setup flipflop for SSR so that turning on light only requires a pulse
 # this will allow cleanup every time page is called (won't need to leave pin HIGH)
 class DevSwitch(object):
-    def toggle(self, dev: Device):
+    def toggle(dev: Device):
         try:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(dev.pin, GPIO.OUT)
