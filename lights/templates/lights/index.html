@@ -2,16 +2,19 @@
 <style>
     #center_div
     {
-        margin: auto auto auto auto;
+        margin: 50px auto 50px auto;
         width: 400px;
     }
 </style>
 
 <div id="center_div">
+{% if error %}
+    <h3>There was an error!</h3>
+{%  endif %}
 {% if light %}
-    <h3>The light is on</h3>
+    <h2>The light is on</h2>
 {% else %}
-    <h3>The light is off</h3>
+    <h2>The light is off</h2>
 {%  endif %}
 <form method="POST" action="{% url 'lights:index' %}">
     {% csrf_token %}
