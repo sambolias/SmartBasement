@@ -5,6 +5,13 @@ from .models import Device
 
 
 def index(request):
+    import RPi.GPIO as GPIO
+    gpio = Device.objects.filter(name="office_lightswitch").first()
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(gpio.pin, GPIO.IN)
+    msg = GPIO.input(gpio.pin)+' Volts for pin '+gpio.pin
+
+
     light = Device.objects.filter(name='office_lights').first()
     error = False
     if light is None:
@@ -17,7 +24,7 @@ def index(request):
             light.save()
         status = light.power
 
-    context = {'light': status, 'error': error}
+    context = {'light': status, 'msg': msg, 'error': error}
 
     # TODO determine if this should be impossible if manual switch toggle
     # seems little chance of this happening unless someone is doing it intentionally
