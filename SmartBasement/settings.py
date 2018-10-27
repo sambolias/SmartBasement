@@ -25,7 +25,7 @@ SECRET_KEY = '$ez&m_fgvhb&rop^3#c(r36276eq2+hvwvw=wa9*4+^k1+i47j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ 'officepi' ]
+ALLOWED_HOSTS = [ 'officepi', 'www.officepi', '192.168.1.129' ]
 
 
 # Application definition

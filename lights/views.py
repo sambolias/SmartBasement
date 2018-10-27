@@ -9,6 +9,7 @@ def index(request):
     gpio = Device.objects.filter(name="office_lightswitch").first()
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(gpio.pin, GPIO.IN)
+
     msg =  str(GPIO.input(gpio.pin))+' Volts for pin '+str(gpio.pin)
 
     light = Device.objects.filter(name='office_lights').first()
