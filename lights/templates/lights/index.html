@@ -1,5 +1,20 @@
-<h3>Hello buddy</h3>
+
+<style>
+    #center_div
+    {
+        margin: auto auto auto auto;
+        width: 400px;
+    }
+</style>
+
+<div id="center_div">
+{% if light %}
+    <h3>The light is on</h3>
+{% else %}
+    <h3>The light is off</h3>
+{%  endif %}
 <form method="POST" action="{% url 'lights:index' %}">
     {% csrf_token %}
-    <input type="submit"/>
+    <input type="submit" value="Switch"/>
 </form>
+</div>
