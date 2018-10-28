@@ -18,6 +18,7 @@ switch = Device.objects.filter(name="office_lightswitch").first()
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(switch.pin, GPIO.OUT)
 GPIO.output(switch.pin, GPIO.HIGH)
+
 # seems like as good a place as any to connect listener
 #gpio = Device.objects.filter(name="office_lightswitch").first()
 #GPIO.setmode(GPIO.BCM)

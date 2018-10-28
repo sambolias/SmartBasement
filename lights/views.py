@@ -16,7 +16,7 @@ def index(request):
     GPIO.setup(switch.pin, GPIO.OUT)
     msg = 'Manual switch is turned '
     if switch.power:
-        msg += ' off'
+        msg += 'off'
     else:
         msg += 'on'
 
