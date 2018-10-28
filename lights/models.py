@@ -12,6 +12,12 @@ class Device(models.Model):
     # TODO make status field and abstract for more device types
 
 
+# switch wire needs to be on at init
+switch = Device.objects.filter(name="office_lightswitch").first()
+assert(switch is not None)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(switch.pin, GPIO.OUT)
+GPIO.output(switch.pin, GPIO.HIGH)
 # seems like as good a place as any to connect listener
 #gpio = Device.objects.filter(name="office_lightswitch").first()
 #GPIO.setmode(GPIO.BCM)

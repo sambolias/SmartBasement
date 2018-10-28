@@ -32,9 +32,9 @@ def index(request):
             switch.power = True
             switch.save()
         else:
-            if GPIO.input(site.pin) == GPIO.LOW and not site.power and switch.power:
+            if GPIO.input(switch.pin) == GPIO.LOW and not site.power and not switch.power:
                 error = DevSwitch.toggle(switch)
-                switch.power = True  # reset to true because toggle turned off
+                switch.power = False  # reset to false because toggle turned on
                 switch.save()
 
         # TODO comment out, this is confusing
@@ -55,8 +55,10 @@ def index(request):
     if request.method == 'POST' and not error:
         if switch.power:
             error = DevSwitch.toggle(switch)
+            site.power = switch.power
         else:
             error = DevSwitch.toggle(site)
+            switch.power = site.power
         # update context
         context['light'] = site.power or switch.power
         context['error'] = error
