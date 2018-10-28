@@ -11,7 +11,6 @@ def index(request):
 
     switch = Device.objects.filter(name="office_lightswitch").first()
     if switch is None:
-        status = False
         error = True
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(switch.pin, GPIO.OUT)
@@ -23,7 +22,6 @@ def index(request):
 
     site = Device.objects.filter(name='office_lights').first()
     if site is None or switch is None:
-        status = False
         error = True
     else:
         # check if the manual switch is on (power is off but power pin is hot)
@@ -40,15 +38,8 @@ def index(request):
         # TODO comment out, this is confusing
         # TODO figure out how to handle case where switch is turned on when site has lights turned on
         # maybe one of the variable pins or some pulse that could be recognized?
-        #    if GPIO.input(switch.pin) == GPIO.LOW
-        # if light.toggle:
-        #     msg = "TOGGLED!"
-        #     error = DevSwitch.toggle(light)
-        #     light.toggle = False
-        #     light.save()
-        # status = light.power
 
-    context = {'light': status, 'msg': msg, 'error': error}
+    context = {'light': switch.power, 'msg': msg, 'error': error}
 
     # TODO determine if this should be impossible if manual switch toggle
     # seems little chance of this happening unless someone is doing it intentionally
