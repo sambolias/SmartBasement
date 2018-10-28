@@ -15,7 +15,7 @@ def index(request):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(switch.pin, GPIO.OUT)
     msg = 'Manual switch is turned '
-    if switch.power:
+    if not switch.power:
         msg += 'off'
     else:
         msg += 'on'
