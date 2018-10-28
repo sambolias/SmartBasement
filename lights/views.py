@@ -5,28 +5,31 @@ from .models import Device
 
 
 def index(request):
-    # import RPi.GPIO as GPIO
-    # from time import sleep
-    # gpio = Device.objects.filter(name="office_lightswitch").first()
-    # GPIO.setmode(GPIO.BCM)
-    # GPIO.setup(gpio.pin, GPIO.IN)
-    # msg = str(GPIO.input(gpio.pin))+' Volts for pin '+str(gpio.pin)
-    #
-    # def toggle_on(channel):
-    #     gpio.toggle = True
-    #     gpio.save()
-    #
-    # def toggle_off(channel):
-    #     # wait to see if it stays off (or was slight voltage drop)
-    #     sleep(.5)
-    #     if GPIO.input(gpio.pin) == GPIO.LOW:
-    #         gpio.toggle = True
-    #         gpio.save()
-    #
-    # GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on)
+    import RPi.GPIO as GPIO
+    from time import sleep
+#    msg = 'Office Lights'
+
+    gpio = Device.objects.filter(name="office_lightswitch").first()
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(gpio.pin, GPIO.IN)
+    msg = str(GPIO.input(gpio.pin))+' Volts for pin '+str(gpio.pin)
+
+    def toggle_on(channel):
+        context = {'light': status, 'msg': msg, 'error': error}
+        gpio.toggle = True
+        gpio.save()
+        return render(request, 'lights/index.html', context)
+
+    def toggle_off(channel):
+        # wait to see if it stays off (or was slight voltage drop)
+        sleep(.5)
+        if GPIO.input(gpio.pin) == GPIO.LOW:
+            gpio.toggle = True
+            gpio.save()
+
+    GPIO.add_event_detect(gpio.pin, GPIO.BOTH, callback=toggle_on)
     # # GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
 
-    msg = 'Office Lights'
     light = Device.objects.filter(name='office_lights').first()
     error = False
     if light is None:
@@ -34,6 +37,7 @@ def index(request):
         error = True
     else:
         if light.toggle:
+            msg = "TOGGLED!"
             error = DevSwitch.toggle(light)
             light.toggle = False
             light.save()
