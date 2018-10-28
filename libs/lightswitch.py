@@ -9,7 +9,7 @@ class DevSwitch(object):
         try:
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(dev.pin, GPIO.OUT)
-            GPIO.output(dev.pin, not GPIO.input(4))
+            GPIO.output(dev.pin, not GPIO.input(dev.pin))
         except:
             dev.power = False
             dev.save()
@@ -24,3 +24,4 @@ class DevSwitch(object):
         else:
             dev.power = True
             dev.save()
+        return True
