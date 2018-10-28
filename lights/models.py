@@ -32,4 +32,4 @@ class Device(models.Model):
 
 
 #GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on)
-# GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
+#GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
