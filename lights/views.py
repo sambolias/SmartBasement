@@ -26,6 +26,7 @@ def index(request):
     # GPIO.add_event_detect(gpio.pin, GPIO.RISING, callback=toggle_on)
     # # GPIO.add_event_detect(gpio.pin, GPIO.FALLING, callback=toggle_off)
 
+    msg = 'Office Lights'
     light = Device.objects.filter(name='office_lights').first()
     error = False
     if light is None:
