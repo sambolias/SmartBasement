@@ -98,7 +98,7 @@ public:
   //catches manual lightswitch lo->hi and hi->lo
   bool inputToggled()
   {
-    int input = gpio.input(inPin)
+    int input = gpio.input(inPin);
     //input from switch is hi
     if(input)
     {
