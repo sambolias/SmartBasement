@@ -39,7 +39,7 @@ class GPIO
   {
    //path to device
    string p1="/sys/class/gpio";
-   string p2=p1+"/gpio"+pin;
+   string p2=p1+"/gpio"+string(pin);
    string path;
    //filestream to device
    ofstream gpio;
@@ -54,7 +54,7 @@ class GPIO
    }
    catch(...)	//TODO catch and rethrow
    {
-    throw new exception("Failed to export GPIO pin "+pin);
+    throw new exception("Failed to export GPIO pin "+string(pin));
    }
 
    if(!close)
@@ -70,7 +70,7 @@ class GPIO
      }
      catch(...)
      {
-       throw new exception("Failed to set as input GPIO pin "+pin);
+       throw new exception("Failed to set as input GPIO pin "+string(pin));
      }
    }
   }
@@ -79,7 +79,7 @@ class GPIO
   {
     //path to device
     string p1="/sys/class/gpio";
-    string p2=p1+"/gpio"+pin;
+    string p2=p1+"/gpio"+string(pin);
     string path;
 
     //device value stored in file
@@ -95,7 +95,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to read value from input GPIO pin "+pin);
+      throw new exception("Failed to read value from input GPIO pin "+string(pin));
     }
     return value;
   }
@@ -104,7 +104,7 @@ class GPIO
   void output(int pin, bool lohi)
   {
     string p1="/sys/class/gpio";
-	  string p2=p1+"/gpio"+pin;
+	  string p2=p1+"/gpio"+string(pin);
     string path;
 	  ofstream gpio;
 
@@ -119,7 +119,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to write to GPIO pin "+pin+" value "+(lohi)?"hi":"lo");
+      throw new exception("Failed to write to GPIO pin "+string(pin)+" value "+(lohi)?"hi":"lo");
     }
   }
 };
