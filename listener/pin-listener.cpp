@@ -29,6 +29,10 @@ class PinListener
   int outPin = 4;
   string outDev = "office_light"
 
+  //lib objects
+  GPIO gpio;
+  DBHelper db;
+
   //logic variables
   bool switchPower;
   bool sitePower;
@@ -63,38 +67,38 @@ class PinListener
   void toggle_power()
   {
     //power = !power
-    int power = GPIO.input(outPin);
+    int power = gpio.input(outPin);
     power = (power) ? 0 : 1;
-    GPIO.output(outPin, power);
+    gpio.output(outPin, power);
     //set db
-    DBHelper.set_power(outDev, power);
+    db.set_power(outDev, power);
   }
 
 public:
   void open_resources()
   {
     //open devices
-    GPIO.open_input(inPin);
-    GPIO.open_output(outPin);
+    gpio.open_input(inPin);
+    gpio.open_output(outPin);
   }
 
   void close_resources()
   {
-    GPIO.close(inPin);
-    GPIO.close(outPin);
+    gpio.close(inPin);
+    gpio.close(outPin);
   }
 
   void readDB()
   {
-    switchPower = DBHelper.get_power(inDev);
-    sitePower = DBHelper.get_power(outDev);
-    siteToggle = DBHelper.get_toggle(outDev);
+    switchPower = db.get_power(inDev);
+    sitePower = db.get_power(outDev);
+    siteToggle = db.get_toggle(outDev);
   }
 
   //catches manual lightswitch lo->hi and hi->lo
   bool inputToggled()
   {
-    int input = GPIO.input(inPin)
+    int input = gpio.input(inPin)
     //input from switch is hi
     if(input)
     {
@@ -119,7 +123,7 @@ public:
   {
     toggle_power();
     //set switch in db
-    DBHelper.set_power(inDev, !switchPower);
+    db.set_power(inDev, !switchPower);
   }
 
   //when button is pressed site sets power like a toggle
@@ -133,7 +137,7 @@ public:
   {
     toggle_power();
     //reset site toggle
-    DBHelper.set_toggle(outDev, false);
+    db.set_toggle(outDev, false);
   }
 
 };

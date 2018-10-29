@@ -12,6 +12,7 @@ using std::ofstream;
 using std::ifstream;
 #include <string>
 using std::string;
+using std::to_string;
 #include <exception>
 using std::exception;
 
@@ -39,7 +40,7 @@ class GPIO
   {
    //path to device
    string p1="/sys/class/gpio";
-   string p2=p1+"/gpio"+string(pin);
+   string p2=p1+"/gpio"+to_string(pin);
    string path;
    //filestream to device
    ofstream gpio;
@@ -54,7 +55,7 @@ class GPIO
    }
    catch(...)	//TODO catch and rethrow
    {
-    throw new exception("Failed to export GPIO pin "+string(pin));
+    throw new exception("Failed to export GPIO pin "+to_string(pin));
    }
 
    if(!close)
@@ -70,7 +71,7 @@ class GPIO
      }
      catch(...)
      {
-       throw new exception("Failed to set as input GPIO pin "+string(pin));
+       throw new exception("Failed to set as input GPIO pin "+to_string(pin));
      }
    }
   }
@@ -79,7 +80,7 @@ class GPIO
   {
     //path to device
     string p1="/sys/class/gpio";
-    string p2=p1+"/gpio"+string(pin);
+    string p2=p1+"/gpio"+to_string(pin);
     string path;
 
     //device value stored in file
@@ -95,7 +96,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to read value from input GPIO pin "+string(pin));
+      throw new exception("Failed to read value from input GPIO pin "+to_string(pin));
     }
     return value;
   }
@@ -104,7 +105,7 @@ class GPIO
   void output(int pin, bool lohi)
   {
     string p1="/sys/class/gpio";
-	  string p2=p1+"/gpio"+string(pin);
+	  string p2=p1+"/gpio"+to_string(pin);
     string path;
 	  ofstream gpio;
 
@@ -119,7 +120,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to write to GPIO pin "+string(pin)+" value "+(lohi)?"hi":"lo");
+      throw new exception("Failed to write to GPIO pin "+to_string(pin)+" value "+(lohi)?"hi":"lo");
     }
   }
 };
