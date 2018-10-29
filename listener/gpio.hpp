@@ -12,8 +12,8 @@ using std::ofstream;
 using std::ifstream;
 #include <string>
 using std::string;
-#include <Exception>
-using std::Exception;
+#include <exception>
+using std::exception;
 
 //not exception safe - need to try in listener
 class GPIO
@@ -54,7 +54,7 @@ class GPIO
    }
    catch(...)	//TODO catch and rethrow
    {
-    throw new Exception("Failed to export GPIO pin "+pin);
+    throw new exception("Failed to export GPIO pin "+pin);
    }
 
    if(!close)
@@ -70,7 +70,7 @@ class GPIO
      }
      catch(...)
      {
-       throw new Exception("Failed to set as input GPIO pin "+pin);
+       throw new exception("Failed to set as input GPIO pin "+pin);
      }
    }
   }
@@ -95,7 +95,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new Exception("Failed to read value from input GPIO pin "+pin);
+      throw new exception("Failed to read value from input GPIO pin "+pin);
     }
     return value;
   }
@@ -119,7 +119,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new Exception("Failed to write to GPIO pin "+pin+" value "+(lohi)?"hi":"lo");
+      throw new exception("Failed to write to GPIO pin "+pin+" value "+(lohi)?"hi":"lo");
     }
   }
 };

@@ -11,8 +11,8 @@ using std::cout;
 using std::string;
 #include <unistd.h>
 //sleep()
-#include <Exception>
-using std::Exception;
+#include <exception>
+using std::exception;
 
 #include "gpio.hpp"
 #include "db-helper.hpp"
