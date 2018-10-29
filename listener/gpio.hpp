@@ -55,7 +55,7 @@ class GPIO
    }
    catch(...)	//TODO catch and rethrow
    {
-    throw new exception("Failed to export GPIO pin "+to_string(pin));
+    throw ("Failed to export GPIO pin "+to_string(pin));
    }
 
    if(!close)
@@ -71,7 +71,7 @@ class GPIO
      }
      catch(...)
      {
-       throw new exception("Failed to set as input GPIO pin "+to_string(pin));
+       throw ("Failed to set as input GPIO pin "+to_string(pin));
      }
    }
   }
@@ -96,7 +96,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to read value from input GPIO pin "+to_string(pin));
+      throw ("Failed to read value from input GPIO pin "+to_string(pin));
     }
     return value;
   }
@@ -120,7 +120,7 @@ class GPIO
     }
     catch(...)
     {
-      throw new exception("Failed to write to GPIO pin "+to_string(pin)+" value "+(lohi)?"hi":"lo");
+      throw ("Failed to write to GPIO pin "+to_string(pin)+" value "+((lohi)?"hi":"lo"));
     }
   }
 };

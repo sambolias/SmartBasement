@@ -27,7 +27,7 @@ class PinListener
   int inPin = 20;
   string inDev = "office_lightswitch";
   int outPin = 4;
-  string outDev = "office_light"
+  string outDev = "office_light";
 
   //lib objects
   GPIO gpio;
