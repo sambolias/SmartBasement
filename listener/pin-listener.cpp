@@ -78,14 +78,15 @@ public:
   void open_resources()
   {
     //open devices
-    gpio.open_input(inPin);
-    gpio.open_output(outPin);
+    //gpio.open_input(inPin);
+    //gpio.open_output(outPin);
+    db = new DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table)
   }
 
   void close_resources()
   {
-    gpio.close(inPin);
-    gpio.close(outPin);
+    //gpio.close(inPin);
+    //gpio.close(outPin);
   }
 
   void readDB()
@@ -102,7 +103,7 @@ public:
     //input from switch is hi
     if(input)
     {
-      cout<<"switch hi\n";
+    //  cout<<"switch hi\n";
       //switch wasn't high so this is toggle
       if(!switchPower)
         return true;
@@ -110,7 +111,7 @@ public:
     //input from switch is lo
     if(!input)
     {
-      cout<<"switch lo\n";
+    //  cout<<"switch lo\n";
       //switch was high so this is toggle
       if(switchPower)
           return true;
@@ -159,10 +160,10 @@ int main(int argc, char **argv)
 
     //listen
     //prefer switch over site during conflict
-    if(pl.inputToggled())
-      pl.toggleInput();
-    else if(pl.outputToggled())
-      pl.toggleOutput();
+    // if(pl.inputToggled())
+    //   pl.toggleInput();
+    // else if(pl.outputToggled())
+    //   pl.toggleOutput();
 
     //idle
     sleep(idle);
