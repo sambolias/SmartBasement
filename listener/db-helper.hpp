@@ -26,13 +26,13 @@ class DBHelper
   {
     int i;
     //look into how to log this, or throw
-    fprintf(stderr, "%s: ", (const char*)data);
+  //  fprintf(stderr, "%s: ", (const char*)data);
 
     //store in class map obj
     for(i = 0; i<argc; i++)
     {
       //remove (null):
-      col[i] = col[i].substr(7, col[i].length());
+  //    col[i] = &(string(col[i]).substr(7, string(col[i]).length()))[0];
       //the key exists
       if(rs.find(col[i]) != rs.end())
       {
@@ -88,7 +88,7 @@ class DBHelper
 
   bool get(string dev, string col)
   {
-    string sql = "select "+col+" from "+TABLE+" where name=\""+device+"\";";
+    string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
     //this needs to pass down exceptions
     return process(sql);
   }
@@ -97,7 +97,8 @@ class DBHelper
   bool set(string dev, string col, bool value)
   {
       //bool evals to 1 or 0
-      string sql = "update "+TABLE+" set "+col+" = "+value+" where name= \""+dev+"\";";
+      string val = (value) ? "1" : "0";
+      string sql = "update "+TABLE+" set "+col+" = "+val+" where name= \""+dev+"\";";
       return process(sql);
   }
 
@@ -122,13 +123,16 @@ public:
     //this needs to pass down exceptions
     if(get(device, "power"))
     {
-      if(rs["power"] == "1")
+	    if(rs.find("power") != rs.end()){
+      if(rs["power"][0] == "1")
         power = true;
       else
         power = false;
+	    
+	    } else cout<<"power not found "<<device<<"\n";
         //rs good
-        for(auto &kv : rs)
-          cout<<kv.first<<" = "<<kv.second[0]<<"\n";
+        //for(auto &kv : rs)
+        //  cout<<device<<"\n"<<kv.first<<" = "<<kv.second[0]<<"\n";
     }
 
     return power;
@@ -141,10 +145,14 @@ public:
     bool toggle = false;
     if(get(device, "toggle"))
     {
-      if(rs["toggle"] == "1")
+    if(rs.find("toggle") != rs.end()){
+      if(rs["toggle"][0] == "1")
         toggle = true;
       else
         toggle = false;
+    }else cout<<"no toggle\n";
     return toggle;
+ 
+    }
   }
 };

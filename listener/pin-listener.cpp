@@ -27,7 +27,7 @@ class PinListener
   int inPin = 20;
   string inDev = "office_lightswitch";
   int outPin = 4;
-  string outDev = "office_light";
+  string outDev = "office_lights";
 
   //lib objects
   GPIO gpio;
@@ -83,15 +83,15 @@ public:
   void open_resources()
   {
     //open devices
-    //gpio.open_input(inPin);
-    //gpio.open_output(outPin);
+    gpio.open_input(inPin);
+    gpio.open_output(outPin);
     db = DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
   }
 
   void close_resources()
   {
-    //gpio.close(inPin);
-    //gpio.close(outPin);
+   // gpio.close(inPin);
+  //  gpio.close(outPin);
   }
 
   void readDB()
@@ -127,6 +127,7 @@ public:
 
   void toggleInput()
   {
+	  cout<<"switched\n";
     toggle_power();
     //set switch in db
     db.set_power(inDev, !switchPower);
@@ -141,6 +142,7 @@ public:
   //it is the responsibility of listener to reset toggle
   void toggleOutput()
   {
+    cout<<"light on\n";
     toggle_power();
     //reset site toggle
     db.set_toggle(outDev, false);
@@ -162,13 +164,13 @@ int main(int argc, char **argv)
   {
     //update
     pl.readDB();
-
+//cout<<"read\n";
     //listen
     //prefer switch over site during conflict
-    // if(pl.inputToggled())
-    //   pl.toggleInput();
-    // else if(pl.outputToggled())
-    //   pl.toggleOutput();
+     if(pl.inputToggled())
+       pl.toggleInput();
+     else if(pl.outputToggled())
+       pl.toggleOutput();
 
     //idle
     sleep(idle);
