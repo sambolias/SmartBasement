@@ -45,12 +45,12 @@ class GPIO
    //filestream to device
    ofstream gpio;
    //un/export device
-   string open_close = (close) ? "/unexport" : "/export";
+   string open_close = (close) ? "/export" : "/unexport";
    try
    {
     path=p1+open_close;
     gpio.open(path.c_str());
-    gpio<<pin;
+    gpio<<to_string(pin);
     gpio.close();
    }
    catch(...)	//TODO catch and rethrow
@@ -58,10 +58,10 @@ class GPIO
     throw ("Failed to export GPIO pin "+to_string(pin));
    }
 
-   if(!close)
+   if(close)
    {
      //specify using as input
-     string dir = (direction) ? "in" : "out";
+     string dir = (direction) ? "out" : "in";
      try
      {
       path=p2+"/direction";
