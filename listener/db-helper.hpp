@@ -102,7 +102,7 @@ public:
   bool get_power(string device)
   {
     bool power = false;
-    string sql = "select power from "+TABLE+" where name="+device+";";
+    string sql = "select power from "+TABLE+" where name=\""+device+"\";";
     //this needs to pass down exceptions
     if(query(sql))
     {
