@@ -77,7 +77,7 @@ class PinListener
 public:
   PinListener()
   {
-    
+
   }
 
   void open_resources()
@@ -104,7 +104,16 @@ public:
   //catches manual lightswitch lo->hi and hi->lo
   bool inputToggled()
   {
-    int input = gpio.input(inPin);
+    bool input = gpio.input(inPin);
+    //clean up low end some by averaging over a few inputs
+    if(!input)
+    {
+      for(int i = 0; i < 10; i++)
+      {
+        sleep(.01);
+        input &= gpio.input(inPin);
+      }
+    }
     //input from switch is hi
     if(input)
     {
