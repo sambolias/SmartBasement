@@ -14,13 +14,13 @@ using std::string;
 using std::map;
 #include <vector>
 using std::vector;
+  map<string, vector<string>> rs;
 
 class DBHelper
 {
   sqlite3 *db;
   string TABLE;
   string PATH;
-  map<string, vector<string>> rs;
 
   static int dbcallback(void *data, int argc, char **argv, char **col)
   {
@@ -32,12 +32,12 @@ class DBHelper
     for(i = 0; i<argc; i++)
     {
       //the key exists
-      if(rs.find(col[i]) != map::end)
+      if(rs.find(col[i]) != rs.end())
       {
-        rs[col[i]].push_back((argv[i] ? argv[i] : "NULL" ))
+        rs[col[i]].push_back((argv[i] ? argv[i] : "NULL" ));
       }
       else
-        rs[col[i]] = (argv[i] ? { argv[i] } : { "NULL" });
+        rs[col[i]].push_back(argv[i] ?  argv[i]  :  "NULL" );
     }
     return 0;
   }
@@ -64,7 +64,7 @@ class DBHelper
     //set up params
     char *err = 0;
     int rc;
-    char* sql = stm.c_str();
+    char* sql = &stm[0];
     const char* data;
     //attempt to open db
     if(!open_db())
@@ -85,6 +85,7 @@ class DBHelper
   }
 
 public:
+  DBHelper(){}
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
@@ -107,7 +108,7 @@ public:
     {
         //rs good
         for(auto &kv : rs)
-          cout<<k.first<<" = "<<k.second<<"\n";
+          cout<<kv.first<<" = "<<kv.second[0]<<"\n";
     }
 
     return power;

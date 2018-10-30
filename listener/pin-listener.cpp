@@ -75,12 +75,17 @@ class PinListener
   }
 
 public:
+  PinListener()
+  {
+    
+  }
+
   void open_resources()
   {
     //open devices
     //gpio.open_input(inPin);
     //gpio.open_output(outPin);
-    db = new DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table)
+    db = DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
   }
 
   void close_resources()
