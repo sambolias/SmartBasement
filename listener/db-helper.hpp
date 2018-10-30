@@ -31,6 +31,8 @@ class DBHelper
     //store in class map obj
     for(i = 0; i<argc; i++)
     {
+      //remove (null):
+      col[i] = col[i].substr(7, col[i].length());
       //the key exists
       if(rs.find(col[i]) != rs.end())
       {
@@ -57,7 +59,7 @@ class DBHelper
     sqlite3_close(db);
   }
 
-  bool query(string stm)
+  bool process(string stm)
   {
     //clear storage map obj
     rs.clear();
@@ -84,6 +86,21 @@ class DBHelper
     return success;
   }
 
+  bool get(string dev, string col)
+  {
+    string sql = "select "+col+" from "+TABLE+" where name=\""+device+"\";";
+    //this needs to pass down exceptions
+    return process(sql);
+  }
+
+  //TODO overload to take other value types
+  bool set(string dev, string col, bool value)
+  {
+      //bool evals to 1 or 0
+      string sql = "update "+TABLE+" set "+col+" = "+value+" where name= \""+dev+"\";";
+      return process(sql);
+  }
+
 public:
   DBHelper(){}
   DBHelper(string path, string table): PATH(path), TABLE(table)
@@ -91,21 +108,24 @@ public:
   }
   void set_power(string device, bool value)
   {
-
+    set(device, "power", value);
   }
 
   void set_toggle(string device, bool value)
   {
-
+    set(device, "toggle", value);
   }
 
   bool get_power(string device)
   {
     bool power = false;
-    string sql = "select power from "+TABLE+" where name=\""+device+"\";";
     //this needs to pass down exceptions
-    if(query(sql))
+    if(get(device, "power"))
     {
+      if(rs["power"] == "1")
+        power = true;
+      else
+        power = false;
         //rs good
         for(auto &kv : rs)
           cout<<kv.first<<" = "<<kv.second[0]<<"\n";
@@ -119,7 +139,12 @@ public:
   bool get_toggle(string device)
   {
     bool toggle = false;
-
+    if(get(device, "toggle"))
+    {
+      if(rs["toggle"] == "1")
+        toggle = true;
+      else
+        toggle = false;
     return toggle;
   }
 };

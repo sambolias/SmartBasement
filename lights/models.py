@@ -8,7 +8,7 @@ class Device(models.Model):
     name = models.CharField(max_length=50)
     pin = models.IntegerField(default=4)
     power = models.BooleanField(default=False)
-#    switch = models.BooleanField(default=False)
+    toggle = models.BooleanField(default=False)
     # TODO make status field and abstract for more device types
 
 
