@@ -90,8 +90,8 @@ public:
 
   void close_resources()
   {
-   // gpio.close(inPin);
-  //  gpio.close(outPin);
+    gpio.close(inPin);
+    gpio.close(outPin);
   }
 
   void readDB()
@@ -108,10 +108,10 @@ public:
     //clean up low end some by averaging over a few inputs
     if(!input)
     {
-      for(int i = 0; i < 10; i++)
+      for(int i = 0; i < 100; i++)
       {
-        sleep(.01);
-        input &= gpio.input(inPin);
+        sleep(.1);
+        input = input && gpio.input(inPin);
       }
     }
     //input from switch is hi
