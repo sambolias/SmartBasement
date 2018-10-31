@@ -128,7 +128,7 @@ public:
         power = true;
       else
         power = false;
-	    
+
 	    } else cout<<"power not found "<<device<<"\n";
         //rs good
         //for(auto &kv : rs)
@@ -150,9 +150,9 @@ public:
         toggle = true;
       else
         toggle = false;
-    }else cout<<"no toggle\n";
+    }else cout<<"toggle not found\n";
     return toggle;
- 
+
     }
   }
 };
