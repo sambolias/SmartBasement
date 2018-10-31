@@ -72,6 +72,7 @@ class PinListener
     gpio.output(outPin, power);
     //set db
     db.set_power(outDev, power);
+    cout<<"light was turned "<<(power ? "on" : "off")<<"\n";
   }
 
 public:
@@ -105,22 +106,17 @@ public:
   bool inputToggled()
   {
     bool input = gpio.input(inPin);
-    //clean up low end some by averaging over a few inputs
-    if(!input)
-    {
-      for(int i = 0; i < 100; i++)
-      {
-        sleep(.1);
-        input = input && gpio.input(inPin);
-      }
-    }
+
     //input from switch is hi
     if(input)
     {
     //  cout<<"switch hi\n";
       //switch wasn't high so this is toggle
       if(!switchPower)
+      {
+        cout<<"manual switch hi\n";
         return true;
+      }
     }
     //input from switch is lo
     if(!input)
@@ -128,7 +124,10 @@ public:
     //  cout<<"switch lo\n";
       //switch was high so this is toggle
       if(switchPower)
+      {
+          cout<<"manual switch lo\n";
           return true;
+      }
     }
     //else
     return false;
@@ -136,7 +135,7 @@ public:
 
   void toggleInput()
   {
-	  cout<<"switched\n";
+	  //cout<<"light was toggled\n";
     toggle_power();
     //set switch in db
     db.set_power(inDev, !switchPower);
@@ -151,7 +150,7 @@ public:
   //it is the responsibility of listener to reset toggle
   void toggleOutput()
   {
-    cout<<"light on\n";
+    cout<<"light was toggled\n";
     toggle_power();
     //reset site toggle
     db.set_toggle(outDev, false);
