@@ -167,7 +167,7 @@ int main(int argc, char **argv)
   pl.open_resources();
 
   //listener loop
-  float idle = .1;
+  float idle = .3;
   while(true) //doom
   {
     //update
