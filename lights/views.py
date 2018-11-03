@@ -53,7 +53,10 @@ def index(request):
         #    error = DevSwitch.toggle(site)
         #    switch.power = site.power
         # update context
-        context['light'] = site.power
+        # because toggle will change power we change it here
+        # TODO maybe find a way to update more accurately
+        # like js in view to update based on db listeners
+        context['light'] = not site.power
         context['error'] = error
 
     return render(request, 'lights/index.html', context)
