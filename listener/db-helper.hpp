@@ -33,8 +33,6 @@ class DBHelper
     //store in class map obj
     for(int i = 0; i<argc; i++)
     {
-      //remove (null):
-  //    col[i] = &(string(col[i]).substr(7, string(col[i]).length()))[0];
       //the key exists
       if(rs.find(col[i]) != rs.end())
       {
@@ -65,7 +63,7 @@ class DBHelper
   //TODO only retry for failed connection
   //throw otherwise
   //need to catch in pin-listener to ensure accuracy of db
-  bool process(string stm)
+  static bool process(string stm)
   {
     bool success;
     do{
@@ -99,7 +97,7 @@ class DBHelper
     return success;
   }
 
-  bool get(string dev, string col)
+  static bool get(string dev, string col)
   {
     string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
     //this needs to pass down exceptions
@@ -107,7 +105,7 @@ class DBHelper
   }
 
   //TODO overload to take other value types
-  bool set(string dev, string col, bool value)
+  static bool set(string dev, string col, bool value)
   {
       //bool evals to 1 or 0
       string val = (value) ? "1" : "0";
@@ -120,17 +118,17 @@ public:
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
-  void set_power(string device, bool value)
+  static void set_power(string device, bool value)
   {
     set(device, "power", value);
   }
 
-  void set_toggle(string device, bool value)
+  static void set_toggle(string device, bool value)
   {
     set(device, "toggle", value);
   }
 
-  bool get_power(string device)
+  static bool get_power(string device)
   {
     bool power = false;
     //this needs to pass down exceptions
@@ -153,7 +151,7 @@ public:
 
 
 
-  bool get_toggle(string device)
+  static bool get_toggle(string device)
   {
     bool toggle = false;
     if(get(device, "toggle"))
