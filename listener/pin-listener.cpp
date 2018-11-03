@@ -13,6 +13,7 @@ using std::string;
 //sleep()
 #include <exception>
 using std::exception;
+#include <signal.h>
 
 #include "gpio.hpp"
 #include "db-helper.hpp"
@@ -79,6 +80,27 @@ public:
   PinListener()
   {
 
+  }
+
+   //make sure pins were exported on close
+  ~PinListener()
+  {
+    try
+    {
+        gpio.close(inPin);
+    }
+    catch(...)
+    {
+        //catch all no throw
+    }
+    try
+    {
+        gpio.close(outPin);
+    }
+    catch(...)
+    {
+        //catch all no throw
+    }
   }
 
   void open_resources()
@@ -164,16 +186,27 @@ input = input && gpio.input(inPin);
 
 };
 
+//global signal repeater
+sig_atomic_t signaled = 0;
+void set_signal(int arg)
+{
+    signaled = 1;
+    cout<<"Terminate signal processed\n";
+}
+
 //loop
 int main(int argc, char **argv)
 {
+  //register signal handler
+  void (*prev_handler)(int);
+  prev_handler = signal(SIGTERM, set_signal);
 
   PinListener pl;
   pl.open_resources();
 
   //listener loop
   float idle = .3;
-  while(true) //doom
+  while(true) //doom loop catches signal for exit
   {
     //update
     pl.readDB();
@@ -185,11 +218,15 @@ int main(int argc, char **argv)
      else if(pl.outputToggled())
        pl.toggleOutput();
 
+    //catch signal for graceful exit
+    if(signaled) break;
+
     //idle
     sleep(idle);
   }
 
   //program shutdown
   pl.close_resources();
+  cout<<"program exited successfully\n";
   return 0;
 }
