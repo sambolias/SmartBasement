@@ -93,7 +93,7 @@ class DBHelper
       sleep(.1);
     }
     }
-    while(!success)
+    while(!success);
 
     close_db();
     return success;
