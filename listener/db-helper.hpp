@@ -5,6 +5,7 @@
 
 */
 #pragma once
+
 #include <string>
 using std::string;
 #include <sqlite3.h>
@@ -16,15 +17,8 @@ using std::map;
 #include <vector>
 using std::vector;
 
-
-class DBHelper
-{
-  static sqlite3 *db;
-  static string TABLE;
-  static string PATH;
-  static map<string, vector<string>> rs;
-
-  static int dbcallback(void *data, int argc, char **argv, char **col)
+map<string, vector<string>> rs;
+  int dbcallback(void *data, int argc, char **argv, char **col)
   {
     //int i;
     //look into how to log this, or throw
@@ -44,17 +38,24 @@ class DBHelper
     return 0;
   }
 
-  static bool open_db()
+class DBHelper
+{
+  sqlite3 *db;
+  string TABLE="lights_device";
+  string PATH="/home/serie/dev/django/SmartBasement/db.sqlite3";
+
+
+  bool open_db()
   {
     int rc = sqlite3_open(PATH.c_str(), &db);
     if(rc)
     {
-      cout<< "Couldn't open database: "+PATH+"\n"+sqlite3_errmsg(db)<<"\n";
+      cout<< "Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)<<"\n";
       return false;
     }
     return true;
   }
-  static void close_db()
+  void close_db()
   {
     sqlite3_close(db);
   }
@@ -63,7 +64,7 @@ class DBHelper
   //TODO only retry for failed connection
   //throw otherwise
   //need to catch in pin-listener to ensure accuracy of db
-  static bool process(string stm)
+  bool process(string stm)
   {
     bool success;
     do{
@@ -79,13 +80,21 @@ class DBHelper
       return false;
     //execute query
     rc = sqlite3_exec(db, sql, dbcallback, (void*)data, &err);
-
+    int tries = 0;
     success = true;
     if(rc != SQLITE_OK)
     {
       cout<< err <<"\n";
       sqlite3_free(err);
       success = false;
+      tries++;
+      if(tries < 10)
+	      cout<<"retrying\n";
+      else
+      {
+	cout<<"failed\n";
+	break;
+      }
       //attempt to give db some catchup time
       //failures were caused by back-to-back calls
       sleep(.1);
@@ -97,7 +106,7 @@ class DBHelper
     return success;
   }
 
-  static bool get(string dev, string col)
+  bool get(string dev, string col)
   {
     string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
     //this needs to pass down exceptions
@@ -105,11 +114,11 @@ class DBHelper
   }
 
   //TODO overload to take other value types
-  static bool set(string dev, string col, bool value)
+  bool set(string dev, string col, bool value)
   {
       //bool evals to 1 or 0
       string val = (value) ? "1" : "0";
-      string sql = "update "+TABLE+" set "+col+" = "+val+" where name= \""+dev+"\";";
+      string sql = "update "+string(TABLE)+" set "+col+" = "+val+" where name= \""+dev+"\";";
       return process(sql);
   }
 
@@ -118,17 +127,17 @@ public:
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
-  static void set_power(string device, bool value)
+  void set_power(string device, bool value)
   {
     set(device, "power", value);
   }
 
-  static void set_toggle(string device, bool value)
+  void set_toggle(string device, bool value)
   {
     set(device, "toggle", value);
   }
 
-  static bool get_power(string device)
+  bool get_power(string device)
   {
     bool power = false;
     //this needs to pass down exceptions
@@ -151,7 +160,7 @@ public:
 
 
 
-  static bool get_toggle(string device)
+  bool get_toggle(string device)
   {
     bool toggle = false;
     if(get(device, "toggle"))
