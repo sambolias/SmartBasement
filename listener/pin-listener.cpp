@@ -199,7 +199,9 @@ int main(int argc, char **argv)
 {
   //register signal handler
   void (*prev_handler)(int);
-  prev_handler = signal(SIGTERM, set_signal);
+  prev_handler = signal(SIGINT, set_signal);
+  void (*term_handler)(int);
+  term_handler = signal(SIGTERM, set_signal);
 
   PinListener pl;
   pl.open_resources();
