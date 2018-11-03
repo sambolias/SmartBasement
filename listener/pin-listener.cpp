@@ -109,6 +109,9 @@ public:
     gpio.open_input(inPin);
     gpio.open_output(outPin);
     db = DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
+    //set initial power state from saved state
+    int state = db.get_power(outDev);
+    gpio.output(outPin, state);
   }
 
   void close_resources()
