@@ -19,9 +19,9 @@ using std::vector;
 
 class DBHelper
 {
-  sqlite3 *db;
-  string TABLE;
-  string PATH;
+  static sqlite3 *db;
+  static string TABLE;
+  static string PATH;
   static map<string, vector<string>> rs;
 
   static int dbcallback(void *data, int argc, char **argv, char **col)
@@ -44,7 +44,7 @@ class DBHelper
     return 0;
   }
 
-  bool open_db()
+  static bool open_db()
   {
     int rc = sqlite3_open(PATH.c_str(), &db);
     if(rc)
@@ -54,7 +54,7 @@ class DBHelper
     }
     return true;
   }
-  void close_db()
+  static void close_db()
   {
     sqlite3_close(db);
   }
