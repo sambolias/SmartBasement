@@ -10,26 +10,28 @@ using std::string;
 #include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <map>
 using std::map;
 #include <vector>
 using std::vector;
-  map<string, vector<string>> rs;
+
 
 class DBHelper
 {
   sqlite3 *db;
   string TABLE;
   string PATH;
+  static map<string, vector<string>> rs;
 
   static int dbcallback(void *data, int argc, char **argv, char **col)
   {
-    int i;
+    //int i;
     //look into how to log this, or throw
   //  fprintf(stderr, "%s: ", (const char*)data);
 
     //store in class map obj
-    for(i = 0; i<argc; i++)
+    for(int i = 0; i<argc; i++)
     {
       //remove (null):
   //    col[i] = &(string(col[i]).substr(7, string(col[i]).length()))[0];
@@ -59,8 +61,14 @@ class DBHelper
     sqlite3_close(db);
   }
 
+
+  //TODO only retry for failed connection
+  //throw otherwise
+  //need to catch in pin-listener to ensure accuracy of db
   bool process(string stm)
   {
+    bool success;
+    do{
     //clear storage map obj
     rs.clear();
     //set up params
@@ -74,13 +82,18 @@ class DBHelper
     //execute query
     rc = sqlite3_exec(db, sql, dbcallback, (void*)data, &err);
 
-    bool success = true;
+    success = true;
     if(rc != SQLITE_OK)
     {
       cout<< err <<"\n";
       sqlite3_free(err);
       success = false;
+      //attempt to give db some catchup time
+      //failures were caused by back-to-back calls
+      sleep(.1);
     }
+    }
+    while(!success)
 
     close_db();
     return success;
