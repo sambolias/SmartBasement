@@ -106,6 +106,11 @@ public:
   bool inputToggled()
   {
     bool input = gpio.input(inPin);
+for(int i=0; i < 100; i++)
+{
+sleep(.1);
+input = input && gpio.input(inPin);
+}
 
     //input from switch is hi
     if(input)
