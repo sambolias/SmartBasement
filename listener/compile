@@ -1,1 +1,1 @@
-`g++ pin-listener.cpp -l sqlite3 -std=c++17`
+`g++ pin-listener.cpp -o pin-listener -l sqlite3 -std=c++17`

@@ -127,12 +127,15 @@ public:
   //catches manual lightswitch lo->hi and hi->lo
   bool inputToggled()
   {
+    //take avg to clean up misread 1s when input should be 0
+    //it is very sensitive, just touching the wire was setting it off...
+    //TODO find most effective n for avg 10 was not enough 100 def works
     bool input = gpio.input(inPin);
-for(int i=0; i < 100; i++)
-{
-sleep(.1);
-input = input && gpio.input(inPin);
-}
+    for(int i=0; i < 100; i++)
+    {
+        sleep(.1);
+        input &= gpio.input(inPin);
+    }
 
     //input from switch is hi
     if(input)
@@ -197,12 +200,13 @@ void set_signal(int arg)
 //loop
 int main(int argc, char **argv)
 {
-  //register signal handler
-  void (*prev_handler)(int);
-  prev_handler = signal(SIGINT, set_signal);
+  //register signal handlers
+  void (*int_handler)(int);
+  int_handler = signal(SIGINT, set_signal);
   void (*term_handler)(int);
   term_handler = signal(SIGTERM, set_signal);
 
+  //create main resource
   PinListener pl;
   pl.open_resources();
 

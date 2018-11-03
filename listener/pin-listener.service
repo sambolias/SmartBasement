@@ -1,0 +1,13 @@
+[Unit]
+Description=Listening service for SmartBasement
+After=apache2.service
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=serie
+ExecStart=/home/serie/dev/django/SmartBasement/listener/pin-listener
+
+[Install]
+WantedBy=multi-user.target
