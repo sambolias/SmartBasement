@@ -143,25 +143,26 @@ body {
 
 <body class="text-center">
 
-        <!-- <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+        
           <header class="masthead mb-auto">
             <div class="inner">
-              <h3 class="masthead-brand">Cover</h3>
+              <h3 class="masthead-brand">SmartBasement</h3>
               <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="#">Home</a>
+                <!-- TODO extra pages -->
+                <!-- <a class="nav-link active" href="#">Home</a>
                 <a class="nav-link" href="#">Features</a>
-                <a class="nav-link" href="#">Contact</a>
+                <a class="nav-link" href="#">Contact</a> -->
               </nav>
             </div>
-          </header> -->
-    
+          </header> 
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <main role="main" class="inner cover">
-            <h1 class="cover-heading">Smart Basement</h1>
+            <h1 class="cover-heading">Office Lights</h1>
             {% if error %}
             <p class="lead">There was an error!</p>
             {%  endif %}
-            {% if light %}
             <p class="lead">{{ msg }}</p>
+            {% if light %}
             <p class="lead">The light is on</p>
             {% else %}
             <p class="lead">The light is off</p>
@@ -174,11 +175,12 @@ body {
             </p>
           </main>
     
-          <!-- <footer class="mastfoot mt-auto">
+          <footer class="mastfoot mt-auto">
             <div class="inner">
-              <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+              <!-- put something useful here, time? temp? -->
+                <p></p>
             </div>
-          </footer> -->
+          </footer>
         </div>
     
     
