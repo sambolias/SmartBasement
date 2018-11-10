@@ -24,7 +24,7 @@ def index(request):
         # TODO figure out how to handle case where switch is turned on when site has lights turned on
         # maybe one of the variable pins or some pulse that could be recognized?
 
-    context = {'light': switch.power, 'msg': msg, 'error': error}
+    context = {'light': site.power, 'msg': msg, 'error': error}
 
     # TODO determine if this should be impossible if manual switch toggle
     # seems little chance of this happening unless someone is doing it intentionally
