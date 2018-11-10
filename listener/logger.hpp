@@ -46,7 +46,7 @@ void writeLog(string log, string name, bool overwrite = false)
   {
     cout<<"Logger["<<name<<"] error: "<<e.what()<<"\n";
     //log error then pushbash log to attempt rewrite
-    logs->push_back("Logger["<<name<<"] error: "<<e.what()<<" - retrying...\n");
+    logs->push_back("Logger["+name+"] error: "+e.what()+" - retrying...\n");
     logs->push_back(log);
   }
   ofs.close();

@@ -149,7 +149,7 @@ public:
     if(input)
     {
     //  cout<<"switch hi\n";
-      //switch wasn't high so this is toggle
+      //switch wasn"t high so this is toggle
       if(!switchPower)
       {
         cout<<"manual switch hi\n";
@@ -220,9 +220,9 @@ int main(int argc, char **argv)
   //spool up loggers
   //TODO use some timestamp or rollover in filename
   //these files will get huge!
-  logger.set('gpio', './logs/gpio-debug.log');
-  logger.set('db', './logs/db-debug.log');
-  logger.set('debug', './logs/debug.log');
+  logger.set("gpio", "./logs/gpio-debug.log");
+  logger.set("db", "./logs/db-debug.log");
+  logger.set("debug", "./logs/debug.log");
   //export gpio pins
   try
   {
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
   }
   catch(exception &e)
   {
-    logger['gpio']->log(e.what());
+    logger["gpio"]->log(e.what());
   }
 
   //listener loop
@@ -244,8 +244,8 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger['db']->log(e.what());
-      // if can't read db don't check pins
+      logger["db"]->log(e.what());
+      // if can"t read db don"t check pins
       // in unknown state
       continue;
     }
@@ -259,7 +259,7 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger['gpio']->log(e.what());
+      logger["gpio"]->log(e.what());
     }
     if(toggled)
     try
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger['gpio']->log(e.what());
+      logger["gpio"]->log(e.what());
     }
     else
     {
@@ -278,7 +278,7 @@ int main(int argc, char **argv)
       }
       catch(exeption &e)
       {
-        logger['gpio']->log(e.what());
+        logger["gpio"]->log(e.what());
         toggled = false;  //ensure not corrupted to true somehow
       }
       if(toggled)
@@ -288,13 +288,13 @@ int main(int argc, char **argv)
       }
       catch(exception &e)
       {
-        logger['gpio']->log(e.what());
+        logger["gpio"]->log(e.what());
       }
     }
     //catch signal for graceful exit
     if(signaled) 
     {
-      logger['debug']->log("program exiting from kill signal\n");
+      logger["debug"]->log("program exiting from kill signal\n");
       break;
     }
     //idle
@@ -308,12 +308,12 @@ int main(int argc, char **argv)
   }
   catch(exception &e)
   {
-    logger['gpio']->log(e.what());
+    logger["gpio"]->log(e.what());
   }
-  logger['gpio']->stop();
-  logger['db']->stop();
-  logger['debug']->stop();
+  logger["gpio"]->stop();
+  logger["db"]->stop();
+  logger["debug"]->stop();
   cout<<"program exited successfully\n";
-  logger['debug']->log("program exited successfully\n");
+  logger["debug"]->log("program exited successfully\n");
   return 0;
 }
