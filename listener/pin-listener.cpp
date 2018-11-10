@@ -17,7 +17,10 @@ using std::exception;
 
 #include "gpio.hpp"
 #include "db-helper.hpp"
+#include "logger.hpp"
 
+//TODO make pin-listener-debug.log 
+//log all the outputs in here
 class PinListener
 {
   //private members
@@ -101,6 +104,7 @@ public:
     {
         //catch all no throw
     }
+
   }
 
   void open_resources()
@@ -118,6 +122,7 @@ public:
   {
     gpio.close(inPin);
     gpio.close(outPin);
+    
   }
 
   void readDB()
@@ -136,7 +141,7 @@ public:
     bool input = gpio.input(inPin);
     for(int i=0; i < 100; i++)
     {
-        sleep(.1);
+        usleep(1);
         input &= gpio.input(inPin);
     }
 
@@ -209,33 +214,106 @@ int main(int argc, char **argv)
   void (*term_handler)(int);
   term_handler = signal(SIGTERM, set_signal);
 
-  //create main resource
+  //create main resources
   PinListener pl;
-  pl.open_resources();
+  Logger logger;
+  //spool up loggers
+  //TODO use some timestamp or rollover in filename
+  //these files will get huge!
+  logger.set('gpio', './logs/gpio-debug.log');
+  logger.set('db', './logs/db-debug.log');
+  logger.set('debug', './logs/debug.log');
+  //export gpio pins
+  try
+  {
+    pl.open_resources();
+  }
+  catch(exception &e)
+  {
+    logger['gpio']->log(e.what());
+  }
 
   //listener loop
-  float idle = .3;
+  int idle = 3;
   while(true) //doom loop catches signal for exit
   {
     //update
-    pl.readDB();
+    try
+    {
+      pl.readDB();
+    }
+    catch(exception &e)
+    {
+      logger['db']->log(e.what());
+      // if can't read db don't check pins
+      // in unknown state
+      continue;
+    }
 //cout<<"read\n";
     //listen
     //prefer switch over site during conflict
-     if(pl.inputToggled())
-       pl.toggleInput();
-     else if(pl.outputToggled())
-       pl.toggleOutput();
-
+    bool toggled = false;
+    try
+    {
+      toggled = pl.inputToggled();
+    }
+    catch(exception &e)
+    {
+      logger['gpio']->log(e.what());
+    }
+    if(toggled)
+    try
+    {
+      pl.toggleInput();
+    }
+    catch(exception &e)
+    {
+      logger['gpio']->log(e.what());
+    }
+    else
+    {
+      try
+      {
+        toggled = pl.outputToggled();
+      }
+      catch(exeption &e)
+      {
+        logger['gpio']->log(e.what());
+        toggled = false;  //ensure not corrupted to true somehow
+      }
+      if(toggled)
+      try
+      {
+        pl.toggleOutput();
+      }
+      catch(exception &e)
+      {
+        logger['gpio']->log(e.what());
+      }
+    }
     //catch signal for graceful exit
-    if(signaled) break;
-
+    if(signaled) 
+    {
+      logger['debug']->log("program exiting from kill signal\n");
+      break;
+    }
     //idle
-    sleep(idle);
+    usleep(idle);
   }
 
   //program shutdown
-  pl.close_resources();
+  try
+  {
+    pl.close_resources();
+  }
+  catch(exception &e)
+  {
+    logger['gpio']->log(e.what());
+  }
+  logger['gpio']->stop();
+  logger['db']->stop();
+  logger['debug']->stop();
   cout<<"program exited successfully\n";
+  logger['debug']->log("program exited successfully\n");
   return 0;
 }

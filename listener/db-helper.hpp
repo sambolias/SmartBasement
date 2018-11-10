@@ -16,13 +16,15 @@ using std::string;
 using std::map;
 #include <vector>
 using std::vector;
+#include <exception>
+using std::exception;
 
 map<string, vector<string>> rs;
   int dbcallback(void *data, int argc, char **argv, char **col)
   {
     //int i;
     //look into how to log this, or throw
-  //  fprintf(stderr, "%s: ", (const char*)data);
+    //  fprintf(stderr, "%s: ", (const char*)data);
 
     //store in class map obj
     for(int i = 0; i<argc; i++)
@@ -50,8 +52,9 @@ class DBHelper
     int rc = sqlite3_open(PATH.c_str(), &db);
     if(rc)
     {
-      cout<< "Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)<<"\n";
-      return false;
+      cout<< "Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)+"\n";
+      throw ("Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)+"\n");
+      //return false;
     }
     return true;
   }
@@ -68,37 +71,45 @@ class DBHelper
   {
     bool success;
     do{
-    //clear storage map obj
-    rs.clear();
-    //set up params
-    char *err = 0;
-    int rc;
-    char* sql = &stm[0];
-    const char* data;
-    //attempt to open db
-    if(!open_db())
-      return false;
-    //execute query
-    rc = sqlite3_exec(db, sql, dbcallback, (void*)data, &err);
-    int tries = 0;
-    success = true;
-    if(rc != SQLITE_OK)
-    {
-      cout<< err <<"\n";
-      sqlite3_free(err);
-      success = false;
-      tries++;
-      if(tries < 10)
-	      cout<<"retrying\n";
-      else
+      //clear storage map obj
+      rs.clear();
+      //set up params
+      char *err = 0;
+      int rc;
+      char* sql = &stm[0];
+      const char* data;
+      //attempt to open db
+      //if(!open_db())
+      //  return false;
+      // may throw
+      open_db();
+
+      //execute query
+      rc = sqlite3_exec(db, sql, dbcallback, (void*)data, &err);
+      int tries = 0;
+      success = true;
+      string error;
+      if(rc != SQLITE_OK)
       {
-	cout<<"failed\n";
-	break;
+        cout<< err <<"\n";
+        error = err;
+        sqlite3_free(err);
+        success = false;
+        tries++;
+        if(tries < 10)
+        {
+          cout<<"retrying\n";
+        }
+        else
+        {
+          cout<<"failed\n";
+          throw (error + "\n");
+          //break;
+        }
+        //attempt to give db some catchup time
+        //failures were caused by back-to-back calls
+        usleep(1);
       }
-      //attempt to give db some catchup time
-      //failures were caused by back-to-back calls
-      sleep(.1);
-    }
     }
     while(!success);
 
@@ -109,7 +120,7 @@ class DBHelper
   bool get(string dev, string col)
   {
     string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
-    //this needs to pass down exceptions
+    // may throw
     return process(sql);
   }
 
@@ -119,6 +130,7 @@ class DBHelper
       //bool evals to 1 or 0
       string val = (value) ? "1" : "0";
       string sql = "update "+string(TABLE)+" set "+col+" = "+val+" where name= \""+dev+"\";";
+      // may throw
       return process(sql);
   }
 
@@ -127,6 +139,7 @@ public:
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
+  // all get and sets may throw exception
   void set_power(string device, bool value)
   {
     set(device, "power", value);
@@ -149,7 +162,12 @@ public:
       else
         power = false;
 
-	    } else cout<<"power not found "<<device<<"\n";
+	    } 
+      else 
+      {
+        cout<<"power not found "<<device<<"\n";
+        throw ("power not found "+device+"\n")
+      }
         //rs good
         //for(auto &kv : rs)
         //  cout<<device<<"\n"<<kv.first<<" = "<<kv.second[0]<<"\n";
@@ -170,7 +188,12 @@ public:
         toggle = true;
       else
         toggle = false;
-    }else cout<<"toggle not found\n";
+    }
+    else
+    {
+      cout<<"toggle not found\n";
+      throw("toggle not found\n")
+    }
     return toggle;
 
     }
