@@ -156,17 +156,17 @@ public:
     //this needs to pass down exceptions
     if(get(device, "power"))
     {
-	    if(rs.find("power") != rs.end()){
-      if(rs["power"][0] == "1")
-        power = true;
-      else
-        power = false;
-
+	    if(rs.find("power") != rs.end())
+      {
+        if(rs["power"][0] == "1")
+          power = true;
+        else
+          power = false;
 	    } 
       else 
       {
         cout<<"power not found "<<device<<"\n";
-        throw ("power not found "+device+"\n")
+        throw ("power not found "+device+"\n");
       }
         //rs good
         //for(auto &kv : rs)
@@ -183,7 +183,8 @@ public:
     bool toggle = false;
     if(get(device, "toggle"))
     {
-    if(rs.find("toggle") != rs.end()){
+    if(rs.find("toggle") != rs.end())
+    {
       if(rs["toggle"][0] == "1")
         toggle = true;
       else
@@ -192,7 +193,7 @@ public:
     else
     {
       cout<<"toggle not found\n";
-      throw("toggle not found\n")
+      throw("toggle not found\n");
     }
     return toggle;
 

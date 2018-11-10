@@ -45,15 +45,14 @@ void writeLog(string log, string name, bool overwrite = false)
   catch(exception &e)
   {
     cout<<"Logger["<<name<<"] error: "<<e.what()<<"\n";
-    //log error then pushbash log to attempt rewrite
-    logs->push_back("Logger["+name+"] error: "+e.what()+" - retrying...\n");
-    logs->push_back(log);
+    throw ("Logger["+name+"] error: "+e.what()+" - retrying...\n");
   }
   ofs.close();
 }
 void run(shared_ptr<deque<string>> &logs, string name)
 {
   time_t curr = time(0);
+  //this could throw - should probably catch and do something...
   writeLog("init log: " + name + " - " + ctime(&curr), name, true);
   while(logs->size())
   {
@@ -61,7 +60,16 @@ void run(shared_ptr<deque<string>> &logs, string name)
     {
       string log = logs->at(1);
       logs->erase(logs->begin()+1);
-      writeLog(log, name);
+      try
+      {
+        writeLog(log, name);
+      }
+      catch(exception &e)
+      {
+        //log error then pushbash log to attempt rewrite
+        logs->push_back(e.what());
+        logs->push_back(log);
+      }
     }
     else usleep(5000); //avoid busywait
   }

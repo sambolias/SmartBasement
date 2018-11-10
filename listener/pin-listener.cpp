@@ -132,7 +132,7 @@ public:
     siteToggle = db.get_toggle(outDev);
   }
 
-  //catches manual lightswitch lo->hi and hi->lo
+  //catches manual lightswitch lo.hi and hi.lo
   bool inputToggled()
   {
     //take avg to clean up misread 1s when input should be 0
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
   }
   catch(exception &e)
   {
-    logger["gpio"]->log(e.what());
+    logger["gpio"].log(e.what());
   }
 
   //listener loop
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger["db"]->log(e.what());
+      logger["db"].log(e.what());
       // if can"t read db don"t check pins
       // in unknown state
       continue;
@@ -259,7 +259,7 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger["gpio"]->log(e.what());
+      logger["gpio"].log(e.what());
     }
     if(toggled)
     try
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     }
     catch(exception &e)
     {
-      logger["gpio"]->log(e.what());
+      logger["gpio"].log(e.what());
     }
     else
     {
@@ -276,9 +276,9 @@ int main(int argc, char **argv)
       {
         toggled = pl.outputToggled();
       }
-      catch(exeption &e)
+      catch(exception &e)
       {
-        logger["gpio"]->log(e.what());
+        logger["gpio"].log(e.what());
         toggled = false;  //ensure not corrupted to true somehow
       }
       if(toggled)
@@ -288,13 +288,13 @@ int main(int argc, char **argv)
       }
       catch(exception &e)
       {
-        logger["gpio"]->log(e.what());
+        logger["gpio"].log(e.what());
       }
     }
     //catch signal for graceful exit
     if(signaled) 
     {
-      logger["debug"]->log("program exiting from kill signal\n");
+      logger["debug"].log("program exiting from kill signal\n");
       break;
     }
     //idle
@@ -308,12 +308,12 @@ int main(int argc, char **argv)
   }
   catch(exception &e)
   {
-    logger["gpio"]->log(e.what());
+    logger["gpio"].log(e.what());
   }
-  logger["gpio"]->stop();
-  logger["db"]->stop();
-  logger["debug"]->stop();
+  logger["gpio"].stop();
+  logger["db"].stop();
+  logger["debug"].stop();
   cout<<"program exited successfully\n";
-  logger["debug"]->log("program exited successfully\n");
+  logger["debug"].log("program exited successfully\n");
   return 0;
 }
