@@ -220,9 +220,9 @@ int main(int argc, char **argv)
   //spool up loggers
   //TODO use some timestamp or rollover in filename
   //these files will get huge!
-  logger.set("gpio", "./logs/gpio-debug.log");
-  logger.set("db", "./logs/db-debug.log");
-  logger.set("debug", "./logs/debug.log");
+  logger.set("gpio", "/var/log/pin-listener/gpio-debug.log");
+  logger.set("db", "/var/log/pin-listener/db-debug.log");
+  logger.set("debug", "/var/log/pin-listener/debug.log");
   //export gpio pins
   try
   {

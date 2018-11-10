@@ -97,7 +97,8 @@ public:
 
   void log(string log)
   {
-    logs->push_back(log);
+    time_t curr = time(0);
+    logs->push_back(string(ctime(&curr)) + ": " + log);
   }
 
   void start()
@@ -109,7 +110,7 @@ public:
       return;
     }
     done=false;
-    worker = thread(run, logs, name);
+    worker = thread(run, std::ref(logs), name);
   //  thread joins when stop is called
   }
 
