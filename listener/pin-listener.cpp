@@ -91,7 +91,7 @@ class PinListener
     //set db
     db.set_power(outDev, power);
     cout<<"light was turned "<<(power ? "on" : "off")<<"\n";
-    logger["pl"].log("light was turned "+(power ? "on" : "off")+"\n");
+    logger["pl"].log("light was turned "+string(power ? "on" : "off")+"\n");
   }
 
 public:
@@ -131,7 +131,7 @@ public:
     //set initial power state from saved state
     int state = db.get_power(outDev);
     gpio.output(outPin, state);
-    logger["pl"].log("Beginning state: "(state ? "on" : "off")+"\n");
+    logger["pl"].log("Beginning state: "+string(state ? "on" : "off")+"\n");
   }
 
   void close_resources()

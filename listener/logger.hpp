@@ -112,7 +112,7 @@ public:
 
   void log(string log)
   {
-    logs->push_back(get_timestamp()) + " - " + log);
+    logs->push_back(get_timestamp() + " - " + log);
   }
 
   void start()
