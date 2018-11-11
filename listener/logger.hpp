@@ -20,7 +20,6 @@ using std::ofstream;
 using std::ifstream;
 #include <thread>
 using std::thread;
-//#include <Windows.h>
 #include <unistd.h>
 //for sleep()
 #include <memory>
@@ -80,6 +79,18 @@ void run(shared_ptr<deque<string>> &logs, string name)
 // worker manages threads that write logs asyncronously
 class LogWorker
 {
+
+string get_timestamp()
+{
+  time_t raw;
+  struct tm * timeinfo;
+  char buffer[80];
+  time(&raw);
+  timeinfo = localtime(&raw);
+  strftime(buffer, sizeof(buffer), "%H:%M:%S", timeinfo);
+  return string(buffer);
+}
+
 public:
 
   LogWorker()
@@ -101,8 +112,7 @@ public:
 
   void log(string log)
   {
-    time_t curr = time(0);
-    logs->push_back(string(ctime(&curr)) + ": " + log);
+    logs->push_back(get_timestamp()) + " - " + log);
   }
 
   void start()

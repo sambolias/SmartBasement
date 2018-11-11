@@ -20,6 +20,18 @@ using std::exception;
 #include "db-helper.hpp"
 #include "logger.hpp"
 
+
+string get_timestamp()
+{
+  time_t raw;
+  struct tm * timeinfo;
+  char buffer[80];
+  time(&raw);
+  timeinfo = localtime(&raw);
+  strftime(buffer, sizeof(buffer), "%m%d%Y", timeinfo);
+  return string(buffer);
+}
+
 //TODO make pin-listener-debug.log 
 //log all the outputs in here
 class PinListener
@@ -37,6 +49,7 @@ class PinListener
   //lib objects
   GPIO gpio;
   DBHelper db;
+  Logger logger;
 
   //logic variables
   bool switchPower;
@@ -78,12 +91,13 @@ class PinListener
     //set db
     db.set_power(outDev, power);
     cout<<"light was turned "<<(power ? "on" : "off")<<"\n";
+    logger["pl"].log("light was turned "+(power ? "on" : "off")+"\n");
   }
 
 public:
   PinListener()
   {
-
+    logger.set("pl", "listener-debug."+get_timestamp()+".log");
   }
 
    //make sure pins were exported on close
@@ -117,10 +131,12 @@ public:
     //set initial power state from saved state
     int state = db.get_power(outDev);
     gpio.output(outPin, state);
+    logger["pl"].log("Beginning state: "(state ? "on" : "off")+"\n");
   }
 
   void close_resources()
   {
+    logger["pl"].stop();
     gpio.close(inPin);
     gpio.close(outPin);
     
@@ -154,6 +170,7 @@ public:
       if(!switchPower)
       {
         cout<<"manual switch hi\n";
+        logger["pl"].log("manual switch hi\n");
         return true;
       }
     }
@@ -165,6 +182,7 @@ public:
       if(switchPower)
       {
           cout<<"manual switch lo\n";
+          logger["pl"].log("manual switch lo\n");
           return true;
       }
     }
@@ -190,6 +208,7 @@ public:
   void toggleOutput()
   {
     cout<<"light was toggled\n";
+    logger["pl"].log("light was toggled\n")
     toggle_power();
     //reset site toggle
     db.set_toggle(outDev, false);
@@ -206,17 +225,6 @@ void set_signal(int arg)
     cout<<"Terminate signal processed\n";
 }
 
-string get_timestamp()
-{
-  time_t raw;
-  struct tm * timeinfo;
-  char buffer[80];
-  time(&raw);
-  timeinfo = localtime(&raw);
-  strftime(buffer, sizeof(buffer), "%m%d%Y", timeinfo);
-  return string(buffer);
-}
-
 //loop
 int main(int argc, char **argv)
 {
@@ -231,9 +239,9 @@ int main(int argc, char **argv)
   Logger logger;
   //spool up loggers
   string tm = get_timestamp();
-  logger.set("gpio", "/var/log/pin-listener/gpio-debug"+tm+".log");
-  logger.set("db", "/var/log/pin-listener/db-debug"+tm+".log");
-  logger.set("debug", "/var/log/pin-listener/debug"+tm+".log");
+  logger.set("gpio", "/var/log/pin-listener/gpio-debug."+tm+".log");
+  logger.set("db", "/var/log/pin-listener/db-debug."+tm+".log");
+  logger.set("debug", "/var/log/pin-listener/debug."+tm+".log");
   //export gpio pins
   try
   {
