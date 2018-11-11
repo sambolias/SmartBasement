@@ -53,7 +53,7 @@ class DBHelper
     if(rc)
     {
       cout<< "Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)+"\n";
-      throw ("Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db)+"\n");
+      throw ("Couldn't open database: "+string(PATH)+"\n"+sqlite3_errmsg(db));
       //return false;
     }
     return true;
@@ -103,7 +103,7 @@ class DBHelper
         else
         {
           cout<<"failed\n";
-          throw (error + "\n");
+          throw (error);
           //break;
         }
         //attempt to give db some catchup time
@@ -166,7 +166,7 @@ public:
       else 
       {
         cout<<"power not found "<<device<<"\n";
-        throw ("power not found "+device+"\n");
+        throw ("power not found "+device);
       }
         //rs good
         //for(auto &kv : rs)
@@ -193,7 +193,7 @@ public:
     else
     {
       cout<<"toggle not found\n";
-      throw("toggle not found\n");
+      throw("toggle not found "+device);
     }
     return toggle;
 

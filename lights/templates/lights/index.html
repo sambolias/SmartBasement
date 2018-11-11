@@ -126,21 +126,6 @@ body {
 
 </style>
 
-<!-- <div id="center_div">
-<h1>{{ msg }}</h1>
-{% if error %}
-    <h3>There was an error!</h3>
-{%  endif %}
-{% if light %}
-    <h2>The light is on</h2>
-{% else %}
-    <h2>The light is off</h2>
-{%  endif %}
-<form method="POST" action="{% url 'lights:index' %}">
-    {% csrf_token %}
-    <input type="submit" value="Switch"/>
-</form>
-</div> -->
 
 <body class="text-center">
 
@@ -148,12 +133,12 @@ body {
         <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
           <header class="masthead mb-auto">
             <div class="inner">
-        <!--      <h3 class="masthead-brand">SmartBasement</h3>
-              <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="#">Home</a>
-                <a class="nav-link" href="#">Features</a>
-		<a class="nav-link" href="#">Contact</a>
-	      </nav> -->
+{#              <h3 class="masthead-brand">SmartBasement</h3>#}
+{#              <nav class="nav nav-masthead justify-content-center">#}
+{#                <a class="nav-link active" href="#">Home</a>#}
+{#                <a class="nav-link" href="#">Features</a>#}
+{#		<a class="nav-link" href="#">Contact</a>#}
+	      </nav>
             </div>
           </header> 
           <main role="main" class="inner cover">
@@ -161,12 +146,8 @@ body {
             {% if error %}
             <p class="lead">There was an error!</p>
             {%  endif %}
-            <p class="lead">{{ msg }}</p>
-            {% if light %}
-            <p class="lead">The light is on</p>
-            {% else %}
-            <p class="lead">The light is off</p>
-            {% endif %}
+            <p class="lead">{{ switch }}</p>
+            <p class="lead">{{ light }}</p>
             <p class="lead">
             <form method="POST" action="{% url 'lights:index' %}">
                 {% csrf_token %}

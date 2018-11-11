@@ -45,7 +45,7 @@ void writeLog(string log, string name, bool overwrite = false)
   catch(exception &e)
   {
     cout<<"Logger["<<name<<"] error: "<<e.what()<<"\n";
-    throw ("Logger["+name+"] error: "+e.what()+" - retrying...\n");
+    throw ("Logger["+name+"] error: "+e.what()+" - retrying...");
   }
   ofs.close();
 }
@@ -120,7 +120,7 @@ public:
     if(name.empty())
     {
       cout<<"LogWorker error: no log file given\n";
-      throw ("LogWorker error: no log file given\n");
+      throw ("LogWorker error: no log file given");
       return;
     }
     done=false;

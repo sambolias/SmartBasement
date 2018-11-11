@@ -1,5 +1,5 @@
 from django.db import models
-import RPi.GPIO as GPIO
+# import RPi.GPIO as GPIO
 from time import sleep
 
 
@@ -13,11 +13,11 @@ class Device(models.Model):
 
 
 # switch wire needs to be on at init
-switch = Device.objects.filter(name="office_lightswitch").first()
+# switch = Device.objects.filter(name="office_lightswitch").first()
 # assert(switch is not None)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(switch.pin, GPIO.OUT)
-GPIO.output(switch.pin, GPIO.HIGH)
+# GPIO.setmode(GPIO.BCM)
+# GPIO.setup(switch.pin, GPIO.OUT)
+# GPIO.output(switch.pin, GPIO.HIGH)
 
 # seems like as good a place as any to connect listener
 #gpio = Device.objects.filter(name="office_lightswitch").first()
