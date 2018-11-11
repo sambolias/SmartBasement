@@ -97,7 +97,7 @@ class PinListener
 public:
   PinListener()
   {
-    logger.set("pl", "listener-debug."+get_timestamp()+".log");
+    logger.set("pl", "/var/log/pin-listener/listener-debug."+get_timestamp()+".log");
   }
 
    //make sure pins were exported on close
@@ -208,7 +208,7 @@ public:
   void toggleOutput()
   {
     cout<<"light was toggled\n";
-    logger["pl"].log("light was toggled\n")
+    logger["pl"].log("light was toggled\n");
     toggle_power();
     //reset site toggle
     db.set_toggle(outDev, false);
