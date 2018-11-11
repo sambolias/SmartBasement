@@ -14,6 +14,7 @@ using std::string;
 #include <exception>
 using std::exception;
 #include <signal.h>
+#include <ctime>
 
 #include "gpio.hpp"
 #include "db-helper.hpp"
@@ -205,6 +206,17 @@ void set_signal(int arg)
     cout<<"Terminate signal processed\n";
 }
 
+string get_timestamp()
+{
+  time_t raw;
+  struct tm * timeinfo;
+  char buffer[80];
+  time(&raw);
+  timeinfo = localtime(&raw);
+  strftime(buffer, sizeof(buffer), "%m%d%Y", timeinfo);
+  return string(buffer);
+}
+
 //loop
 int main(int argc, char **argv)
 {
@@ -218,11 +230,10 @@ int main(int argc, char **argv)
   PinListener pl;
   Logger logger;
   //spool up loggers
-  //TODO use some timestamp or rollover in filename
-  //these files will get huge!
-  logger.set("gpio", "/var/log/pin-listener/gpio-debug.log");
-  logger.set("db", "/var/log/pin-listener/db-debug.log");
-  logger.set("debug", "/var/log/pin-listener/debug.log");
+  string tm = get_timestamp();
+  logger.set("gpio", "/var/log/pin-listener/gpio-debug"+tm+".log");
+  logger.set("db", "/var/log/pin-listener/db-debug"+tm+".log");
+  logger.set("debug", "/var/log/pin-listener/debug"+tm+".log");
   //export gpio pins
   try
   {

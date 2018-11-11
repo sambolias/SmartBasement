@@ -30,8 +30,9 @@ using std::make_shared;
 #include <exception>
 using std::exception;
 
-//This is kinda sloppy
-//TODO how to make run a member function ??
+// *** Global thread worker functions ***
+
+// TODO how to make run a member function ??
 void writeLog(string log, string name, bool overwrite = false)
 {
   std::ios_base::openmode flags = ofstream::out;
@@ -49,11 +50,12 @@ void writeLog(string log, string name, bool overwrite = false)
   }
   ofs.close();
 }
+
 void run(shared_ptr<deque<string>> &logs, string name)
 {
   time_t curr = time(0);
   //this could throw - should probably catch and do something...
-  writeLog("init log: " + name + " - " + ctime(&curr), name, true);
+  writeLog("init log: " + name + " - " + ctime(&curr), name);
   while(logs->size())
   {
     if(logs->size() > 1)
@@ -71,9 +73,11 @@ void run(shared_ptr<deque<string>> &logs, string name)
         logs->push_back(log);
       }
     }
-    else usleep(5000); //avoid busywait
+    else usleep(500); //avoid busywait
   }
 }
+
+// worker manages threads that write logs asyncronously
 class LogWorker
 {
 public:
@@ -120,7 +124,7 @@ public:
     done=true;
     //wait until logs have finished
     while(logs->size() > 1)
-      usleep(5000);
+      usleep(500);
     //then remove signal log and join
     logs->pop_back();
     worker.join();
