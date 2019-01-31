@@ -14,12 +14,13 @@
     let scrollIt = function ()
     {
         console.log("test2");
-        //iframe.scrollBy(iframe.scrollWidth/2, iframe.scrollHeight/2);
-        iframe.alignContent = "center";
-        iframe.scroll(iframe.scrollWidth/2, iframe.scrollHeight/2);
-        console.log(iframe.scrollWidth);
+        iframe.contentWindow.scrollTo(iframe.scrollWidth/2, iframe.scrollHeight/2);
+        iframe.document.scrollTo(iframe.scrollWidth/2, iframe.scrollHeight/2);
+        iframe.scrollTo(iframe.scrollWidth/2, iframe.scrollHeight/2);
+
     };
     iframe.onload = scrollIt;
+    iframe.onreadystatechange = scrollIt;
     iframe.onchange = scrollIt;
     iframe.onclick = scrollIt;
     </script>
