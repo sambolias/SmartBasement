@@ -10,13 +10,16 @@
     <iframe id="cam" src="http://192.168.1.126:8081"></iframe>
     <script>
     console.log("test1");
-    var iframe = document.getElementById("cam");
-    iframe.onload = function ()
+    let iframe = document.getElementById("cam");
+    let scrollIt = function ()
     {
         console.log("test2");
         iframe.contentWindow.scrollBy(iframe.scrollWidth/2, iframe.scrollHeight/2);
         console.log(iframe.scrollWidth);
-    }
+    };
+    iframe.onload = scrollIt;
+    iframe.onchange = scrollIt;
+    iframe.onclick = scrollIt;
     </script>
 
 {% endblock %}
