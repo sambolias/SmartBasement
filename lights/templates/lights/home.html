@@ -7,15 +7,16 @@
 {%  endblock %}
 
 {% block content %}
+    <iframe id="cam" src="http://192.168.1.126:8081"></iframe>
     <script>
+    console.log("test1");
     var iframe = document.getElementById("cam");
     iframe.onload = function ()
     {
+        console.log("test2");
         iframe.scrollBy(iframe.scrollWidth/2, iframe.scrollHeight/2);
-        console.log("test");
         console.log(iframe.scrollWidth);
     }
     </script>
-    <iframe id="cam" src="http://192.168.1.126:8081"></iframe>
 
 {% endblock %}
