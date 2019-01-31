@@ -7,7 +7,6 @@
 {%  endblock %}
 
 {% block content %}
-<iframe id="cam" src="http://192.168.1.126:8081"></iframe>
     <script>
     var iframe = document.getElementById("cam");
     iframe.onload = function ()
@@ -17,4 +16,6 @@
         console.log(iframe.scrollWidth);
     }
     </script>
+    <iframe id="cam" src="http://192.168.1.126:8081"></iframe>
+
 {% endblock %}
