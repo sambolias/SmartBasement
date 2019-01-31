@@ -29,7 +29,7 @@ def lights(request):
         light.toggle = True
         light.save()
         # return redirect so post isn't resent on refresh
-        return redirect('/')
+        return redirect('/lights')
 
     return render(request, 'lights/lights.html', context)
 
