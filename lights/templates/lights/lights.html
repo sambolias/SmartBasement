@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<a class="nav-link" href="{% url 'lights:home' %}">Home</a>
+<a class="nav-link active" href="{% url 'lights:lights' %}">Lights</a>
+<a class="nav-link" href="{% url 'lights:outlets' %}">Outlets</a>
+{%  endblock %}
+
+{% block content %}
+        <h1 class="cover-heading">Office Lights</h1>
+        {% if error %}
+            <p class="lead">There was an error!</p>
+        {% endif %}
+        <p class="lead">{{ switch }}</p>
+        <p class="lead">{{ light }}</p>
+        <p class="lead">
+        <form method="POST" action="{% url 'lights:lights' %}">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-lg btn-secondary" value="Switch"/>
+        </form>
+        </p>
+{% endblock %}

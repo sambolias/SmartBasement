@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<a class="nav-link active" href="{% url 'lights:home' %}">Home</a>
+<a class="nav-link" href="{% url 'lights:lights' %}">Lights</a>
+<a class="nav-link" href="{% url 'lights:outlets' %}">Outlets</a>
+{%  endblock %}
+
+{% block content %}
+<iframe src="http://192.168.1.126:8081"></iframe>
+{% endblock %}

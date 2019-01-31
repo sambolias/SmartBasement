@@ -4,7 +4,11 @@ from django.shortcuts import render, redirect
 from .models import Device
 
 
-def index(request):
+def home(request):
+    return render(request, 'lights/home.html')
+
+
+def lights(request):
     error = False
 
     switch = Device.objects.filter(name="office_lightswitch").first()
@@ -27,4 +31,8 @@ def index(request):
         # return redirect so post isn't resent on refresh
         return redirect('/')
 
-    return render(request, 'lights/index.html', context)
+    return render(request, 'lights/lights.html', context)
+
+
+def outlets(request):
+    return render(request, 'lights/outlets.html')
