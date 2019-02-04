@@ -2,13 +2,42 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 # from libs.lightswitch import DevSwitch
 from .models import Device
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 
 
+def site_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            last = request.session.get('last_visited', default='/')
+            return redirect(last)
+
+    return render(request, 'lights/login.html')
+
+
+@login_required
 def home(request):
-    return render(request, 'lights/home.html')
+    last = request.session.get('last_visited')
+    if last:
+        del request.session['last_visited']
+        return redirect(last)
+    request.session['last_visited'] = '/cam'
+    return redirect('/cam')
 
 
+@login_required
+def cam(request):
+    request.session['last_visited'] = '/cam'
+    return render(request, 'lights/cam.html')
+
+
+@login_required
 def lights(request):
+    request.session['last_visited'] = '/lights'
     error = False
 
     switch = Device.objects.filter(name="office_lightswitch").first()
@@ -34,5 +63,7 @@ def lights(request):
     return render(request, 'lights/lights.html', context)
 
 
+@login_required
 def outlets(request):
+    request.session['last_visited'] = '/outlets'
     return render(request, 'lights/outlets.html')

@@ -11,6 +11,7 @@ class Device(models.Model):
     toggle = models.BooleanField(default=False)
     # TODO make status field and abstract for more device types
 
+from SmartBasement import init_users
 
 # switch wire needs to be on at init
 # switch = Device.objects.filter(name="office_lightswitch").first()
