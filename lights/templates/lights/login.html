@@ -1,18 +1,17 @@
-{% extends 'base.html' %}
-
-{% block nav %}
-<a class="nav-link" href="{% url 'lights:home' %}">Home</a>
-<a class="nav-link" href="{% url 'lights:lights' %}">Lights</a>
-<a class="nav-link" href="{% url 'lights:outlets' %}">Outlets</a>
-{%  endblock %}
+{% extends baseTemplate %}
 
 
 {% block content %}
+  {% if user.is_authenticated %}
+    hi {{ user.username }}
+    <button onclick="window.location.href= &quot;{% url 'lights:logout' %}&quot;;">logout</button>
+  {% else %}
     Login
     <form method="post">
-        {% csrf_token %}
-        <input type="text" name="username">
-        <input type="password" name="password">
-        <input type="submit" value="Login">
+      {% csrf_token %}
+      <input type="text" name="username">
+      <input type="password" name="password">
+      <input type="submit" value="Login">
     </form>
+  {% endif %}
 {% endblock %}

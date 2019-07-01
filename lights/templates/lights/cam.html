@@ -1,20 +1,91 @@
-{% extends 'base.html' %}
 
-{% block nav %}
-<a class="nav-link active" href="{% url 'lights:cam' %}">Camera</a>
-<a class="nav-link" href="{% url 'lights:lights' %}">Lights</a>
-<a class="nav-link" href="{% url 'lights:outlets' %}">Outlets</a>
+{% extends baseTemplate %}
+
+{% block page_name %}
+Cameras
 {%  endblock %}
 
-{% block content %}
-    <button onclick="changeImg('1');">Edward</button>
-    <button onclick="changeImg('2');">Test</button>
-   <img id="cam" class="img-responsive" src="http://serie:testpw@206.174.113.240:8081/1">
-   <script>
-   function changeImg(i)
-   {
-       var img = document.getElementById("cam");
-       img.src="http://serie:testpw@206.174.113.240:8081/"+i.toString();
-   }
-   </script>
+
+{% block page_settings %}
+<li id="page_setting">no camera selected</li>
+
+        <input id='cid' type='hidden' value='0'/>
 {% endblock %}
+
+
+{% block content %}
+              
+    <script>
+        function drawSettings()
+        {
+            var cid = document.getElementById("cid");
+            if(cid)
+            {              
+                var url = "{% url 'lights:cam' %}";
+                var inner = '<form method="POST" action="'+url+'">{% csrf_token %}<input name="camera_preferred" id="camera_preferred" type="hidden" value="'+cid.value+'"/><input type="submit" class="btn btn-lg btn-secondary" value="Save Camera Preference"/></form>';
+                document.getElementById("page_setting").innerHTML = inner;
+            }    
+        }
+
+            window.addEventListener('DOMContentLoaded', function(){ 
+                if ({{ camera_preferred }} == '1')
+                    drawPreview('1');
+                else if ({{ camera_preferred }} == '2')
+                    drawPreview('2');
+                else 
+                drawThumbs(3); });
+
+            function drawThumbs(i)
+            {
+              var inner = "<div class=\"vertical-center\"><div>";
+              for(var j = 1; j <= i; j++)
+              {
+                inner += drawThumb(j.toString());
+              }
+              inner += "</div></div>";
+              document.getElementById("content").innerHTML = inner;
+              document.getElementById("cid").value='0';
+              drawSettings();
+            }
+
+            function drawThumb(cid)
+            {
+              return "<img class='cam-thumb' src='http://serie:testpw@206.174.113.240:8081/"+cid+"/current' onclick='drawPreview(\""+cid+"\");'>";
+            }
+
+            function drawPreview(cid)
+            {
+              var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+              inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawFullScreen(\""+cid+"\");'>fullscreen</i>";
+              inner += "<div class='cam-preview vertical-center'><div>";
+              inner += drawFeed(cid, "/substream");
+              inner += "</div></div>";
+
+              document.getElementById("content").innerHTML = inner;
+              document.getElementById("cid").value=cid;
+              drawSettings();
+            }
+
+            function drawFullScreen(cid)
+            {
+              var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+              inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawPreview(\""+cid+"\");'>fullscreen_exit</i>";
+              inner += "<div class='cam-fullscreen'>";
+              inner += drawFeed(cid, "/stream");
+              inner += "</div>";
+
+              document.getElementById("content").innerHTML = inner;
+              document.getElementById("cid").value=cid;
+              drawSettings();
+            }
+
+            function drawFeed(cid, sub="/stream")
+            {
+            
+                return "<img src='http://serie:testpw@206.174.113.240:8081/"+cid+sub+"'>";
+            }
+        </script>
+        
+
+
+{%  endblock %}
