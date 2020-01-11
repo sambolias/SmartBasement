@@ -56,7 +56,9 @@ def getBaseTemplate(request):
 def getStyle(request):
     style = request.session.get('style', 'dark')
     if request.method == 'POST':
-        style = request.POST.get('style', 'dark')
+        # in case the POST request was for something other than setting style
+        fallback = request.session.get('style', 'dark')
+        style = request.POST.get('style', fallback)
         request.session['style'] = style
     return style
 
