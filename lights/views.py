@@ -40,7 +40,9 @@ def home(request):
 def cam(request):
     request.session['last_visited'] = '/cam'
     if request.method == 'POST':
-        c = request.POST.get('camera_preferred', '0')
+        # in case the POST request was for something other than setting cam
+        fallback = request.session.get('camera_preferred', '0')
+        c = request.POST.get('camera_preferred', fallback)
         request.session['camera_preferred'] = c
         return render(request, 'lights/cam.html', { 'baseTemplate': getBaseTemplate(request), 'style': getStyle(request), 'camera_preferred': c })
 
