@@ -36,7 +36,6 @@ window.onload = function() { setFrame(); drawSettings();};
       if (this.readyState == 4 && this.status == 200){
           //this.response is what you're looking for
           console.log(this.response, typeof this.response);
-          document.getElementById('count').innerHTML = this.responseText;
           for (var i = 0; i < parseInt(this.responseText); i++)
           {
             var num = i.toString();
