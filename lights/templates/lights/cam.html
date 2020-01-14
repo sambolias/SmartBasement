@@ -14,78 +14,124 @@ Cameras
 
 
 {% block content %}
-              
+<img id="cam"></img>
     <script>
         function drawSettings()
         {
             var cid = document.getElementById("cid");
             if(cid)
-            {              
+            {
                 var url = "{% url 'lights:cam' %}";
                 var inner = '<form method="POST" action="'+url+'">{% csrf_token %}<input name="camera_preferred" id="camera_preferred" type="hidden" value="'+cid.value+'"/><input type="submit" class="btn btn-lg btn-secondary" value="Save Camera Preference"/></form>';
                 document.getElementById("page_setting").innerHTML = inner;
-            }    
+            }
         }
 
-            window.addEventListener('DOMContentLoaded', function(){ 
-                if ({{ camera_preferred }} == '1')
-                    drawPreview('1');
-                else if ({{ camera_preferred }} == '2')
-                    drawPreview('2');
-                else 
-                drawThumbs(3); });
+// start recursive callback onload
+window.onload = function() { setFrame(); drawSettings();};
 
-            function drawThumbs(i)
-            {
-              var inner = "<div class=\"vertical-center\"><div>";
-              for(var j = 1; j <= i; j++)
-              {
-                inner += drawThumb(j.toString());
-              }
-              inner += "</div></div>";
-              document.getElementById("content").innerHTML = inner;
-              document.getElementById("cid").value='0';
-              drawSettings();
-            }
+  //immediately get cam count
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(){
+      if (this.readyState == 4 && this.status == 200){
+          //this.response is what you're looking for
+          console.log(this.response, typeof this.response);
+          document.getElementById('count').innerHTML = this.responseText;
+          for (var i = 0; i < parseInt(this.responseText); i++)
+          {
+            var num = i.toString();
+            var el = document.createElement('button');
+            el.value = num;
+            el.addEventListener("click", function() { document.getElementById('cid').value = this.value; });
+            el.innerHTML = i;
+            document.body.append(el);
+          }
+      }
+  }
+  xhr.open('GET', 'http://206.174.113.240:8081/count');
+  xhr.send();
 
-            function drawThumb(cid)
-            {
-              return "<img class='cam-thumb' src='http://serie:testpw@206.174.113.240:8081/"+cid+"/current' onclick='drawPreview(\""+cid+"\");'>";
-            }
 
-            function drawPreview(cid)
-            {
-              var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
-              inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawFullScreen(\""+cid+"\");'>fullscreen</i>";
-              inner += "<div class='cam-preview vertical-center'><div>";
-              inner += drawFeed(cid, "/substream");
-              inner += "</div></div>";
+function setFrame()
+{
+  var num = document.getElementById('cid').value;
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(){
+      if (this.readyState == 4 && this.status == 200){
+          //this.response is what you're looking for
+          // console.log(this.response, typeof this.response);
+          var img = document.getElementById('cam');
+          var url = window.URL || window.webkitURL;
+          img.src = url.createObjectURL(this.response);
+          //delay and recall
+          setTimeout(setFrame(num), 500);
+      }
+  }
+  xhr.open('GET', 'http://206.174.113.240:8081/'+num);
+  // this sparks some cross site request issue
+  // xhr.setRequestHeader('Content-type', 'image/jpeg');
+  xhr.responseType = 'blob';
+  xhr.send();
+}
+        //     window.addEventListener('DOMContentLoaded', function(){
+        //         if ({{ camera_preferred }} == '1')
+        //             drawPreview('1');
+        //         else if ({{ camera_preferred }} == '2')
+        //             drawPreview('2');
+        //         else
+        //         drawThumbs(3); });
 
-              document.getElementById("content").innerHTML = inner;
-              document.getElementById("cid").value=cid;
-              drawSettings();
-            }
+        //     function drawThumbs(i)
+        //     {
+        //       var inner = "<div class=\"vertical-center\"><div>";
+        //       for(var j = 1; j <= i; j++)
+        //       {
+        //         inner += drawThumb(j.toString());
+        //       }
+        //       inner += "</div></div>";
+        //       document.getElementById("content").innerHTML = inner;
+        //       document.getElementById("cid").value='0';
+        //       drawSettings();
+        //     }
 
-            function drawFullScreen(cid)
-            {
-              var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
-              inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawPreview(\""+cid+"\");'>fullscreen_exit</i>";
-              inner += "<div class='cam-fullscreen'>";
-              inner += drawFeed(cid, "/stream");
-              inner += "</div>";
+        //     function drawThumb(cid)
+        //     {
+        //       return "<img class='cam-thumb' src='http://serie:testpw@206.174.113.240:8081/"+cid+"/current' onclick='drawPreview(\""+cid+"\");'>";
+        //     }
 
-              document.getElementById("content").innerHTML = inner;
-              document.getElementById("cid").value=cid;
-              drawSettings();
-            }
+        //     function drawPreview(cid)
+        //     {
+        //       var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+        //       inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawFullScreen(\""+cid+"\");'>fullscreen</i>";
+        //       inner += "<div class='cam-preview vertical-center'><div>";
+        //       inner += drawFeed(cid, "/substream");
+        //       inner += "</div></div>";
 
-            function drawFeed(cid, sub="/stream")
-            {
-            
-                return "<img src='http://serie:testpw@206.174.113.240:8081/"+cid+sub+"'>";
-            }
+        //       document.getElementById("content").innerHTML = inner;
+        //       document.getElementById("cid").value=cid;
+        //       drawSettings();
+        //     }
+
+        //     function drawFullScreen(cid)
+        //     {
+        //       var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+        //       inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawPreview(\""+cid+"\");'>fullscreen_exit</i>";
+        //       inner += "<div class='cam-fullscreen'>";
+        //       inner += drawFeed(cid, "/stream");
+        //       inner += "</div>";
+
+        //       document.getElementById("content").innerHTML = inner;
+        //       document.getElementById("cid").value=cid;
+        //       drawSettings();
+        //     }
+
+        //     function drawFeed(cid, sub="/stream")
+        //     {
+
+        //         return "<img src='http://serie:testpw@206.174.113.240:8081/"+cid+sub+"'>";
+        //     }
         </script>
-        
+
 
 
 {%  endblock %}
