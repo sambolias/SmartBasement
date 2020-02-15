@@ -1,12 +1,12 @@
-{% extends 'base.html' %}
+{% extends baseTemplate %}
 
-{% block nav %}
-<a class="nav-link" href="{% url 'lights:cam' %}">Camera</a>
-<a class="nav-link active" href="{% url 'lights:lights' %}">Lights</a>
-<a class="nav-link" href="{% url 'lights:outlets' %}">Outlets</a>
+{% block page_name %}
+Lights
 {%  endblock %}
 
 {% block content %}
+<div class="vertical-center">
+    <div>
         <h1 class="cover-heading">Office Lights</h1>
         {% if error %}
             <p class="lead">There was an error!</p>
@@ -19,4 +19,6 @@
             <input type="submit" class="btn btn-lg btn-secondary" value="Switch"/>
         </form>
         </p>
+    </div>
+</div>
 {% endblock %}

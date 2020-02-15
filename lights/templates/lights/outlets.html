@@ -1,12 +1,15 @@
-{% extends 'base.html' %}
+{% extends baseTemplate %}
 
-{% block nav %}
-<a class="nav-link" href="{% url 'lights:cam' %}">Camera</a>
-<a class="nav-link" href="{% url 'lights:lights' %}">Lights</a>
-<a class="nav-link active" href="{% url 'lights:outlets' %}">Outlets</a>
+{% block page_name %}
+
+    Outlets
+
 {%  endblock %}
 
-
 {% block content %}
-    Under Construction
+<div class="vertical-center">
+    <div>
+        Under Construction
+    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,470 @@
+ul 
+{
+    list-style-type: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0;
+}
+
+
+
+html, body, .container-fluid, .content, .row, .side_bar
+{
+    /* height: 100%; */
+}
+
+/* Small devices (landscape phones, 576px and down) */
+@media (max-width: 576px) 
+{ 
+    .page_name
+    {
+        font-size: 5vw;
+    }
+
+    .site_name
+    {
+        font-size: 7.5vw;
+    }
+
+    .labels
+    {
+        font-size: 2rem;
+    }
+    .settings_item
+    {
+        font-size: 1rem;
+    }
+
+    .menu 
+    {
+        font-size: 1.5rem;
+    }
+
+    .opts
+    {
+        font-size: 2rem;
+    }
+
+    .user_menu_elt
+    {
+        font-size: 2rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) 
+{ 
+
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) 
+{ 
+    .page_name
+    {
+        line-height: 75px;
+    }
+
+    .site_name
+    {
+        line-height: 75px;
+    }
+
+    .user_menu
+    {
+        line-height: 75px;
+    }
+
+    .labels
+    {
+        font-size: 3rem;
+    }
+    .settings_item
+    {
+        font-size: 2rem;
+    }
+
+    .menu 
+    {
+        font-size: 2rem;
+    }
+
+    .opts
+    {
+        font-size: 3rem;
+    }
+
+    .user_menu_elt
+    {
+        font-size: 3rem;
+    }
+}
+
+ /* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {  } 
+
+.page_name
+{
+    padding-left: 10%;
+}
+.site_name
+{
+    padding-left: 10%;
+}
+
+.container-fluid
+{
+    min-height: 100%;
+
+}
+
+.content
+{
+
+    border-right-width: 15px;
+    border-right-style: solid;
+}
+
+.toasts
+{
+    margin-top: 100px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 2; 
+}
+.toasts.hide
+{
+    display: none;
+}
+.toast
+{
+    display: inherit;
+}
+
+.menu 
+{
+    margin-bottom: 25px;
+    box-shadow: 0 4px rgb(20,24,27);
+    border-color: rgb(20,24,27);
+    /* transform: rotate(90deg); */
+    transition: .25s;
+}
+.menu:hover 
+{
+    box-shadow: 0 5px rgb(20,24,27);
+    border-color: rgb(20,24,27);
+    transform: rotate(90deg) translateY(-1px);
+    transition: .25s;
+}
+.menu.open
+{
+    background-color: rgb(30,34,38);
+    border-color: rgb(20,24,27);
+    box-shadow: 0 6px rgb(20,24,27);
+    transform: rotate(90deg) translateY(-2px);
+    transition: .25s;
+}
+.menu.open:hover
+{
+    background-color: rgb(25,29,33);
+    border-color: rgb(20,24,27);
+    box-shadow: 0 7px rgb(20,24,27);
+    transform: rotate(90deg) translateY(-3px);
+    transition: .25s;
+}
+
+.floating-btn 
+{
+    opacity: .75;
+    background-color: rgba(0,0,0,0) !important;
+    position: absolute;
+    cursor: pointer;
+    font-size: 2em;
+}
+
+.cam-thumb
+{
+    height: 11vw;
+    margin: 25px;
+    cursor: pointer;
+}
+
+.back-cams
+{
+    left: 12vw;
+}
+
+.toggle-cam
+{
+    left: 15vw;
+}
+
+
+.labels 
+{
+    padding-top: 6px;
+    padding-bottom:6px;
+    padding-right: 12px;
+    padding-left: 0px;
+    margin: 0;
+}
+
+.user_bar
+{
+    margin-top: 15vh;
+    position: fixed;
+    top: 0;
+    right: 10px;
+    z-index: 1;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0%;
+    transition: 1s;
+}
+.user_bar ul
+{
+    margin: 10px 20px 0px 20px;
+}
+.user_bar ul li 
+{
+    text-align: center;
+    padding: 0 10px 0 10px;
+    border-bottom-style: solid;
+}
+.user_bar ul li .settings_content
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.user_bar ul li button
+{
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.light_btn
+{
+    background-color: white;
+    color: black;
+}
+.dark_btn
+{
+    background-color: black;
+    color: white;
+}
+
+.user_bar.open 
+{
+    max-width: 75%;
+    transition: 1s;
+}
+
+.side_menu
+{
+    line-height: 1.6 !important;
+    margin-top: 11vh;
+    padding-top: 15.5vh;
+    margin-left: 6.5vw;
+    position: absolute;
+    top: 0;
+    /* left: 125px; */
+    z-index: 1;
+    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 0%;
+    transition: 1s;
+}
+
+.side_menu.open
+{
+    max-width: 75%;
+    transition: 1s;
+
+}
+
+
+.side_bar
+{
+    position: fixed;
+    top: 0;
+    z-index: 1;
+
+    height: 100%;
+    padding-left: 0px;
+    padding-right: 0%;
+}
+.icon_menu
+{
+    margin-top: 15vh;
+    background-color: black;
+
+}
+.head 
+{
+    height: 15vh;
+    background-color: black;
+}
+
+.foot 
+{
+}
+
+.user_menu
+{
+    padding-right: 30px; 
+    text-align: right;
+}
+
+
+.modal-dialog 
+{
+    /*position: absolute;
+    top: 50px;
+    right: 0; */
+}
+
+.content
+{
+    margin-top: 15vh;
+    /* overflow: scroll !important; */
+}
+
+
+.cam-fullscreen
+{
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  flex-flow: column; 
+  min-height: 83vh;
+}
+
+.cam-fullscreen img 
+{
+  min-height: 75vh;
+}
+
+.cam-preview img
+{
+  min-height: 50vh;
+}
+
+.vertical-center 
+{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    flex-flow: column; 
+    min-height: 83vh;
+}
+
+
+.dark
+{
+    color: white;
+    background-color: black;
+}
+
+.dark.content
+{
+    color: white;
+    background-color: rgb(30,30,30);
+    border-right-color: black;
+}
+
+.dark#settings.open
+{
+    color: rgb(65,60,60);
+}
+.dark#settings.open:hover
+{
+    color: rgb(95,90,90);
+}
+
+.dark.opts:hover 
+{
+    color: rgb(30,30,30);
+}
+.dark.user_menu_elt:hover 
+{
+    color: rgb(30,30,30);
+}
+
+.kim
+{
+    color: white;
+    background-color: rgb(248, 120, 216);
+}
+
+.kim.content
+{
+    color: white;
+    background-color:  rgb(248, 174, 230);
+    border-right-color: rgb(248, 120, 216);
+}
+
+.kim#settings.open
+{
+    color: rgb(65,60,60);
+}
+.kim#settings.open:hover
+{
+    color: rgb(95,90,90);
+}
+
+.kim.opts:hover 
+{
+    color: rgb(248, 174, 230);
+}
+.kim.user_menu_elt:hover 
+{
+    color: rgb(248, 174, 230);
+}
+
+.light
+{
+    color: black;
+    background-color: white;
+}
+
+.light.content
+{
+    color: black;
+    background-color: rgb(230,230,230);
+    border-right-color: white;
+}
+
+.light#settings.open
+{
+    color: rgb(205,200,200);
+}
+.light#settings.open:hover
+{
+    color: rgb(85,80,80);
+}
+.light.opts:hover 
+{
+    color: rgb(200,200,200);
+}
+.light.user_menu_elt:hover 
+{
+    color: rgb(200,200,200);
+}
+.light.labels
+{
+  color: black !important;
+}
+/* .dark.modal-content
+{
+    background-color: black;
+}
+.light.modal-content
+{
+    background-color: black;
+} */
+
