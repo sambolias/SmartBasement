@@ -9,7 +9,26 @@
 {% block content %}
 <div class="vertical-center">
     <div>
+        <p class="lead">{{ test }}</p>
         <p class="lead">{{ outlet }}</p>
+        <form method="POST" action="{% url 'lights:outlets' %}">
+            {% csrf_token %}
+            <input type="radio" id="sunday" name="day" value="1">
+            <label for="sunday">sunday</label>
+            <input type="radio" id="monday" name="day" value="2">
+            <label for="monday">monday</label>
+            <input type="radio" id="tuesday" name="day" value="4">
+            <label for="tuesday">tuesday</label>
+            <input type="radio" id="wednesday" name="day" value="8">
+            <label for="wednesday">wednesday</label>
+            <input type="radio" id="thursday" name="day" value="16">
+            <label for="thursday">thursday</label>
+            <input type="radio" id="friday" name="day" value="32">
+            <label for="friday">friday</label>
+            <input type="radio" id="saturday" name="day" value="64">
+            <label for="saturday">saturday</label>
+            <input type="submit" class="btn btn-lg btn-secondary" value="Schedule Time"/>
+        </form>
     </div>
 </div>
 {% endblock %}

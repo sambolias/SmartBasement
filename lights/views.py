@@ -100,6 +100,10 @@ def outlets(request):
 
     outlet_msg = 'Outlets are powered ' + ('on' if outlets.power else 'off')
 
-    context = {'outlet': outlet_msg, 'baseTemplate': getBaseTemplate(request), 'style': getStyle(request)}
+    # test = "empty"
+    if request.method == 'POST':
+        test = request.POST.get('day', "empty")
+
+    context = {'outlet': outlet_msg, 'test': test,'baseTemplate': getBaseTemplate(request), 'style': getStyle(request)}
 
     return render(request, 'lights/outlets.html', context)
