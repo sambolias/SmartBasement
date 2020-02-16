@@ -173,6 +173,7 @@ public:
       // cout<<"changed scheduled power";
       //set db
       db.set_power(scheduledDev, scheduledPower);
+      logger["pl"].log("Scheduled change\n");
     }
     lastScheduledPower = scheduledPower;
   }
