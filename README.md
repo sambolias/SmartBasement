@@ -17,6 +17,10 @@
 - change ownership of db and root to www-data:www-data (or whoever runs apache) and make sure it has write permissions
 - create lights_device table 
 
+## for listener c++
+- `sudo apt install libsqlite3-dev`
+- use compile script to build
+
 ```sql 
 CREATE TABLE IF NOT EXISTS "lights_device" 
   ( "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT
@@ -40,6 +44,8 @@ CREATE TABLE IF NOT EXISTS "lights_schedule"
 insert into lights_device values (1,"office_lights",4,0,0);
 insert into lights_device values (2,"office_lightswitch",20,0,0);
 insert into lights_device values (3,"winter_outlets",26,0,0);
+
+select * from lights_schedule where on_time <= datetime('now', 'localtime') and off_time > datetime('now', 'localtime');
 ```
 
 - create users through django 

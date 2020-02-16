@@ -39,16 +39,20 @@ class PinListener
   //private members
   //this needs to come from conf - taken by cmd line
   string table = "lights_device";
+  string scheduleTable = "lights_schedule";
   //database objects
   //TODO make these come from db
   int inPin = 20;
   string inDev = "office_lightswitch";
   int outPin = 4;
   string outDev = "office_lights";
-
+  // TODO this should come from db
+  int scheduledPin = 26;
+  string scheduledDev = "winter_outlets";
   //lib objects
   GPIO gpio;
   DeviceDBHelper db;
+  ScheduleDBHelper scheduler;
   Logger logger;
 
   //logic variables
@@ -58,6 +62,8 @@ class PinListener
   bool siteToggle;
   //bool inputHigh;
   //bool outputHigh;
+  bool scheduledPower;
+  bool lastScheduledPower = false;
 
   /* switch logic
 
@@ -94,6 +100,21 @@ class PinListener
     logger["pl"].log("light was turned "+string(power ? "on" : "off")+"\n");
   }
 
+  void handleScheduledPower()
+  {
+    // int power = scheduledPower;
+    // power = (power) ? 0 : 1;
+    // only make changes if change
+    if(lastScheduledPower != scheduledPower)
+    {
+      // gpio.output(scheduledPin, scheduledPower);
+      cout<<"changed scheduled power";
+      //set db
+      db.set_power(scheduledDev, scheduledPower);
+    }
+    lastScheduledPower = scheduledPower;
+  }
+
 public:
   PinListener()
   {
@@ -128,6 +149,7 @@ public:
     gpio.open_input(inPin);
     gpio.open_output(outPin);
     db = DeviceDBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
+    scheduler = ScheduleDBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", scheduleTable);
     //set initial power state from saved state
     int state = db.get_power(outDev);
     gpio.output(outPin, state);
@@ -147,6 +169,8 @@ public:
     switchPower = db.get_power(inDev);
     sitePower = db.get_power(outDev);
     siteToggle = db.get_toggle(outDev);
+
+    scheduledPower = scheduler.isScheduled();
   }
 
   //catches manual lightswitch lo.hi and hi.lo

@@ -19,7 +19,7 @@ using std::vector;
 #include <exception>
 using std::exception;
 
-
+// TODO basic helper class needs better interface...
 map<string, vector<string>> rs;
 int dbcallback(void *data, int argc, char **argv, char **col)
 {
@@ -122,32 +122,46 @@ protected:
     return success;
   }
 
-  bool get(string dev, string col)
+  // this just populates global rs map
+  bool query(string sql)
   {
-    string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
-    // may throw
     return process(sql);
   }
 
-  //TODO overload to take other value types
-  bool set(string dev, string col, bool value)
-  {
-      //bool evals to 1 or 0
-      string val = (value) ? "1" : "0";
-      string sql = "update "+string(TABLE)+" set "+col+" = "+val+" where name= \""+dev+"\";";
-      // may throw
-      return process(sql);
-  }
+
 public:
   DBHelper(){}
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
-}
+};
 
 // db helper class specific to device
-class DeviceDBHelper extends DBHelper
+class DeviceDBHelper: public DBHelper
 {
+bool get(string dev, string col)
+{
+  string sql = "select "+col+" from "+TABLE+" where name=\""+dev+"\";";
+  // may throw
+  return query(sql);
+}
+
+//TODO overload to take other value types
+bool set(string dev, string col, bool value)
+{
+    //bool evals to 1 or 0
+    string val = (value) ? "1" : "0";
+    string sql = "update "+string(TABLE)+" set "+col+" = "+val+" where name= \""+dev+"\";";
+    // may throw
+    return query(sql);
+}
+
+public:
+  DeviceDBHelper(){}
+  DeviceDBHelper(string path, string table): DBHelper(path, table)
+  {
+  }
+
   // all get and sets may throw exception
   void set_power(string device, bool value)
   {
@@ -165,13 +179,13 @@ class DeviceDBHelper extends DBHelper
     //this needs to pass down exceptions
     if(get(device, "power"))
     {
-	    if(rs.find("power") != rs.end())
+      if(rs.find("power") != rs.end())
       {
         if(rs["power"][0] == "1")
           power = true;
         else
           power = false;
-	    }
+      }
       else
       {
         cout<<"power not found "<<device<<"\n";
@@ -208,4 +222,32 @@ class DeviceDBHelper extends DBHelper
 
     }
   }
+};
+
+class ScheduleDBHelper: public DBHelper
+{
+bool getCurrent()
+{
+  string sql = "select pin from lights_schedule where on_time <= datetime('now', 'localtime') and off_time > datetime('now', 'localtime');";
+  // may throw
+  return query(sql);
+}
+
+public:
+  ScheduleDBHelper(){}
+  ScheduleDBHelper(string path, string table): DBHelper(path, table)
+  {
+  }
+
+  // TODO this should throw if no success so that action isn't taken on failed query
+  bool isScheduled()
+  {
+    bool success = getCurrent();
+    if(success)
+    {
+      return (rs.find("pin") != rs.end());
+    }
+    else return false;
+  }
+
 };
