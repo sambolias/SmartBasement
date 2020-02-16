@@ -100,7 +100,7 @@ def outlets(request):
 
     outlet_msg = 'Outlets are powered ' + ('on' if outlets.power else 'off')
 
-    # test = "empty"
+    test = "empty"
     if request.method == 'POST':
         test = request.POST.get('day', "empty")
 
