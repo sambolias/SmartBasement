@@ -19,29 +19,34 @@ using std::vector;
 #include <exception>
 using std::exception;
 
+
 map<string, vector<string>> rs;
-  int dbcallback(void *data, int argc, char **argv, char **col)
+int dbcallback(void *data, int argc, char **argv, char **col)
+{
+  //int i;
+  //look into how to log this, or throw
+  //  fprintf(stderr, "%s: ", (const char*)data);
+
+  //store in class map obj
+  for(int i = 0; i<argc; i++)
   {
-    //int i;
-    //look into how to log this, or throw
-    //  fprintf(stderr, "%s: ", (const char*)data);
-
-    //store in class map obj
-    for(int i = 0; i<argc; i++)
+    //the key exists
+    if(rs.find(col[i]) != rs.end())
     {
-      //the key exists
-      if(rs.find(col[i]) != rs.end())
-      {
-        rs[col[i]].push_back((argv[i] ? argv[i] : "NULL" ));
-      }
-      else
-        rs[col[i]].push_back(argv[i] ?  argv[i]  :  "NULL" );
+      rs[col[i]].push_back((argv[i] ? argv[i] : "NULL" ));
     }
-    return 0;
+    else
+      rs[col[i]].push_back(argv[i] ?  argv[i]  :  "NULL" );
   }
+  return 0;
+}
 
+// primitive db helper class
 class DBHelper
 {
+
+protected:
+
   sqlite3 *db;
   string TABLE="lights_device";
   string PATH="/home/serie/dev/django/SmartBasement/db.sqlite3";
@@ -133,12 +138,16 @@ class DBHelper
       // may throw
       return process(sql);
   }
-
 public:
   DBHelper(){}
   DBHelper(string path, string table): PATH(path), TABLE(table)
   {
   }
+}
+
+// db helper class specific to device
+class DeviceDBHelper extends DBHelper
+{
   // all get and sets may throw exception
   void set_power(string device, bool value)
   {
@@ -162,8 +171,8 @@ public:
           power = true;
         else
           power = false;
-	    } 
-      else 
+	    }
+      else
       {
         cout<<"power not found "<<device<<"\n";
         throw ("power not found "+device);

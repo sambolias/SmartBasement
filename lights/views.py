@@ -114,7 +114,7 @@ def outlets(request):
   request.session['last_visited'] = '/outlets'
 
   outlets = Device.objects.filter(name="winter_outlets").first()
-  now = datetime.datetime.now(timezone('US/Alaska')) # - datetime.timedelta(1)
+  now = datetime.datetime.now(timezone('US/Alaska'))
 
   # can't directly compare datetime by date and time...
   next_on = Schedule.objects.filter ( on_time__year__gte=now.year

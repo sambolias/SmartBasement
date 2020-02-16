@@ -32,7 +32,7 @@ string get_timestamp()
   return string(buffer);
 }
 
-//TODO make pin-listener-debug.log 
+//TODO make pin-listener-debug.log
 //log all the outputs in here
 class PinListener
 {
@@ -48,7 +48,7 @@ class PinListener
 
   //lib objects
   GPIO gpio;
-  DBHelper db;
+  DeviceDBHelper db;
   Logger logger;
 
   //logic variables
@@ -127,7 +127,7 @@ public:
     //open devices
     gpio.open_input(inPin);
     gpio.open_output(outPin);
-    db = DBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
+    db = DeviceDBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
     //set initial power state from saved state
     int state = db.get_power(outDev);
     gpio.output(outPin, state);
@@ -139,7 +139,7 @@ public:
     logger["pl"].stop();
     gpio.close(inPin);
     gpio.close(outPin);
-    
+
   }
 
   void readDB()
@@ -311,7 +311,7 @@ int main(int argc, char **argv)
       }
     }
     //catch signal for graceful exit
-    if(signaled) 
+    if(signaled)
     {
       logger["debug"].log("program exiting from kill signal\n");
       break;
