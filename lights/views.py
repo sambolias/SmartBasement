@@ -95,4 +95,11 @@ def lights(request):
 @login_required
 def outlets(request):
     request.session['last_visited'] = '/outlets'
-    return render(request, 'lights/outlets.html', { 'baseTemplate': getBaseTemplate(request), 'style': getStyle(request) })
+
+    outlets = Device.objects.filter(name="winter_outlets").first()
+
+    outlet_msg = 'Outlets are powered ' + ('on' if outlets.power else 'off')
+
+    context = {'outlet': outlet_msg, 'baseTemplate': getBaseTemplate(request), 'style': getStyle(request)}
+
+    return render(request, 'lights/outlets.html', context)

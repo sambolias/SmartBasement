@@ -9,7 +9,14 @@ class Device(models.Model):
     pin = models.IntegerField(default=4)
     power = models.BooleanField(default=False)
     toggle = models.BooleanField(default=False)
-    # TODO make status field and abstract for more device types
+
+class Schedule(models.Model):
+    on_time = models.DateTimeField()
+    off_time = models.DateTimeField()
+    pin = models.IntegerField()
+    override_on = models.BooleanField(default=False)
+    override_off = models.BooleanField(default=False)
+    repeating = models.BooleanField(default=False)
 
 from SmartBasement import init_users
 
