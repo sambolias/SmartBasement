@@ -100,9 +100,10 @@ def outlets(request):
 
     outlet_msg = 'Outlets are powered ' + ('on' if outlets.power else 'off')
 
-    test = "empty"
+    test = 0
     if request.method == 'POST':
-        test = request.POST.get('day', "empty")
+        for i in range (0, 6):
+            test += request.POST.get('day'+i, 0)
 
     context = {'outlet': outlet_msg, 'test': test,'baseTemplate': getBaseTemplate(request), 'style': getStyle(request)}
 
