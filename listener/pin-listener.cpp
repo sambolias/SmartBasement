@@ -99,16 +99,18 @@ class PinListener
     cout<<"light was turned "<<(power ? "on" : "off")<<"\n";
     logger["pl"].log("light was turned "+string(power ? "on" : "off")+"\n");
   }
-
+  // todo better than this rediculousness
+  bool first_run=true;
   void handleScheduledPower()
   {
     // int power = scheduledPower;
     // power = (power) ? 0 : 1;
     // only make changes if change
-    if(lastScheduledPower != scheduledPower)
+    if(lastScheduledPower != scheduledPower || first_run)
     {
-      // gpio.output(scheduledPin, scheduledPower);
-      cout<<"changed scheduled power";
+      first_run = false;
+      gpio.output(scheduledPin, scheduledPower);
+      // cout<<"changed scheduled power";
       //set db
       db.set_power(scheduledDev, scheduledPower);
     }
