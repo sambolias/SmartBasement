@@ -135,6 +135,7 @@ public:
     gpio.open_input(inPin);
     gpio.open_output(outPin);
     db = DeviceDBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", table);
+    gpio.open_output(schedulePin);
     scheduler = ScheduleDBHelper("/home/serie/dev/django/SmartBasement/db.sqlite3", scheduleTable);
     //set initial power state from saved state
     int state = db.get_power(outDev);
