@@ -19,6 +19,8 @@ using std::vector;
 #include <exception>
 using std::exception;
 
+#include "pin-scheduler.hpp"
+
 // TODO basic helper class needs better interface...
 map<string, vector<string>> rs;
 int dbcallback(void *data, int argc, char **argv, char **col)
@@ -226,28 +228,78 @@ public:
 
 class ScheduleDBHelper: public DBHelper
 {
-bool getCurrent()
-{
-  string sql = "select pin from lights_schedule where on_time <= datetime('now', 'localtime') and off_time > datetime('now', 'localtime');";
-  // may throw
-  return query(sql);
-}
+  void reschedule(const PinScheduler & ps)
+  {
+    if(ps.repeating)
+    {
+      string sql;
+      // schedule next occurance
+      sql = "insert into " + string(TABLE) +
+            " (on_time, off_time, pin, override_on, override_off, repeating) "
+            " values ( datetime(\"" + ps.on_time + "\", \"+7 days\")"
+            ", datetime(\"" + ps.off_time + "\", \"+7 days\")"
+            ", " + std::to_string(ps.pin) +
+            ", " + std::to_string(int(ps.override_on)) +
+            ", " + std::to_string(int(ps.override_off)) +
+            ", " + std::to_string(1) +
+            ");";
+      query(sql);
+      // change current to not repeating
+      sql = "update "+string(TABLE)+" set repeating = 0 where id = " + std::to_string(ps.id)+";";
+      query(sql);
+    }
+  }
+
 
 public:
+
+  vector<PinScheduler> getCurrent()
+  {
+    vector<PinScheduler> psList;
+    string sql =
+      "select id, on_time, off_time, pin, override_on, override_off, repeating "
+      "from lights_schedule where "
+      "on_time <= datetime('now', 'localtime') "
+      "and off_time > datetime('now', 'localtime');";
+    // may throw
+    bool success = query(sql);
+    if(success)
+    {
+      for(int i = 0; i < rs["id"].size(); i++)
+      {
+        // parse rs and convert
+        auto ps = PinScheduler
+          ( std::atoi(rs["id"][i].c_str())
+          , rs["on_time"][i]
+          , rs["off_time"][i]
+          , std::atoi(rs["pin"][i].c_str())
+          , std::atoi(rs["override_on"][i].c_str())
+          , std::atoi(rs["override_off"][i].c_str())
+          , std::atoi(rs["repeating"][i].c_str())
+          );
+        // handles forwarding logic for repeating scheduled time
+        reschedule(ps);
+        psList.push_back(ps);
+      }
+    }
+    return psList;
+  }
+
+
   ScheduleDBHelper(){}
   ScheduleDBHelper(string path, string table): DBHelper(path, table)
   {
   }
 
   // TODO this should throw if no success so that action isn't taken on failed query
-  bool isScheduled()
-  {
-    bool success = getCurrent();
-    if(success)
-    {
-      return (rs.find("pin") != rs.end());
-    }
-    else return false;
-  }
+  // bool isScheduled()
+  // {
+  //   bool success = getCurrent();
+  //   if(success)
+  //   {
+  //     return (rs.find("pin") != rs.end());
+  //   }
+  //   else return false;
+  // }
 
 };

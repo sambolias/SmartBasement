@@ -5,6 +5,8 @@
   uses sqlite3.h C++ library
 
 */
+#include <algorithm>
+using std::sort;
 #include <iostream>
 using std::cout;
 #include <string>
@@ -15,10 +17,13 @@ using std::string;
 using std::exception;
 #include <signal.h>
 #include <ctime>
+#include <vector>
+using std::vector;
 
 #include "gpio.hpp"
 #include "db-helper.hpp"
 #include "logger.hpp"
+#include "pin-scheduler.hpp"
 
 
 string get_timestamp()
@@ -55,6 +60,9 @@ class PinListener
   ScheduleDBHelper scheduler;
   Logger logger;
 
+  // TODO generalize device and schedule so any amount can run
+  // TODO Make ctor take list of device and schedule
+
   //logic variables
   bool switchPower;
   bool sitePower;
@@ -62,6 +70,7 @@ class PinListener
   bool siteToggle;
   //bool inputHigh;
   //bool outputHigh;
+  vector<PinScheduler> scheduled;
   bool scheduledPower;
   bool lastScheduledPower = false;
 
@@ -98,6 +107,27 @@ class PinListener
     db.set_power(outDev, power);
     cout<<"light was turned "<<(power ? "on" : "off")<<"\n";
     logger["pl"].log("light was turned "+string(power ? "on" : "off")+"\n");
+  }
+
+  // for sort, make override_off ahead of all else (other doesn't matter are =)
+  static bool compareScheduled(const PinScheduler &a, const PinScheduler &b)
+  {
+    // only need to swap if off is on right
+    return b.override_off && !a.override_off;
+  }
+  // pre: db has been read and populated scheduled with current objs
+  // post: desired current pin on/off bool
+  bool checkSchedule()
+  {
+    if(!scheduled.empty())
+    {
+      sort(scheduled.begin(), scheduled.end(), compareScheduled);
+      if(!scheduled[0].override_off)
+      {
+        return true; // on time
+      }
+    }
+    return false; // off if nothing or off time scheduled
   }
 
 
@@ -157,7 +187,10 @@ public:
     sitePower = db.get_power(outDev);
     siteToggle = db.get_toggle(outDev);
 
-    scheduledPower = scheduler.isScheduled();
+    // gets vector of pinschedulers
+    scheduled = scheduler.getCurrent();
+    // handle multiple schedule object logic
+    scheduledPower = checkSchedule();
   }
 
   // todo better than this rediculousness
