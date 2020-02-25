@@ -8,63 +8,91 @@
 
 {% block content %}
 <div class="vertical-center">
-    <div>
+    <div class="row">
+      <div class="col-12">
         <p class="lead">{{ next_on }}</p>
+      </div>
+      <div class="col-12">
         <p class="lead">{{ outlet }}</p>
+      </div>
 
-        <label for="single">Single Use</label>
-        <form id="single" method="POST" action="{% url 'lights:outlets' %}">
+      <div class="col-12">
+        <form id="set-current" method="POST" action="{% url 'lights:outlets' %}">
           {% csrf_token %}
-          <div class="row">
-            <div class="col-12">
-              <input type="date" id="single_date" name="single_date" value="{{ curr_date }}">
-              <label for="single_date">Date</label>
-            </div>
-            <div class="col-12">
-              <input type="time" id="single_start" name="single_start" value="{{ curr_time }}">
-              <label for="single_start">Start Time</label>
-              <input type="time" id="single_end" name="single_end" value="{{ curr_time }}">
-              <label for="single_end">End Time</label>
-            </div>
-            <div class="col-12">
-              <input type="submit" class="btn btn-lg btn-secondary" value="Schedule Time"/>
-            </div>
-          </div>
+          <label for="set-current-off">off</label>
+          <input onchange="document.getElementById('hidden-current').value=this.value; $('#set-current').submit();" type="radio" id="set-current-off" name="set-current-radio" value=0 {{ override_off }}>
+          <label for="set-current-auto">auto</label>
+          <input onchange="document.getElementById('hidden-current').value=this.value; $('#set-current').submit();" type="radio" id="set-current-auto" name="set-current-radio" value=1 {{ override_auto }}>
+          <label for="set-current-on">on</label>
+          <input onchange="document.getElementById('hidden-current').value=this.value; $('#set-current').submit();" type="radio" id="set-current-on" name="set-current-radio" value=2 {{ override_on }}>
+          <input type="hidden" id="hidden-current" name="hidden-current" value=2>
         </form>
+      </div>
 
-
-        <label for="repeat">Repeating</label>
-        <form id="repeat" method="POST" action="{% url 'lights:outlets' %}">
-          {% csrf_token %}
-          <div class="row">
-            <div class="col-12">
-              <input type="radio" id="sunday" name="day6" value="1">
-              <label for="sunday">sunday</label>
-              <input type="radio" id="monday" name="day0" value="1">
-              <label for="monday">monday</label>
-              <input type="radio" id="tuesday" name="day1" value="1">
-              <label for="tuesday">tuesday</label>
-              <input type="radio" id="wednesday" name="day2" value="1">
-              <label for="wednesday">wednesday</label>
-              <input type="radio" id="thursday" name="day3" value="1">
-              <label for="thursday">thursday</label>
-              <input type="radio" id="friday" name="day4" value="1">
-              <label for="friday">friday</label>
-              <input type="radio" id="saturday" name="day5" value="1">
-              <label for="saturday">saturday</label>
+      <div class="col-12">
+        <!-- <label for="single">Single Use</label> -->
+        <button class="btn btn-primary collapse-button" type="button" data-toggle="collapse" data-target="#single">
+          Schedule Single Time
+        </button>
+        <div style="display: flex;">
+          <form id="single" class="collapse" method="POST" action="{% url 'lights:outlets' %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <input type="date" id="single_date" name="single_date" value="{{ curr_date }}">
+                <label for="single_date">Date</label>
+              </div>
+              <div class="col-12">
+                <input type="time" id="single_start" name="single_start" value="{{ curr_time }}">
+                <label for="single_start">Start Time</label>
+                <input type="time" id="single_end" name="single_end" value="{{ curr_time }}">
+                <label for="single_end">End Time</label>
+              </div>
+              <div class="col-12">
+                <input type="submit" class="btn btn-lg btn-secondary" value="Schedule Time"/>
+              </div>
             </div>
-            <div class="col-12">
-              <input type="time" id="repeat_start" name="repeat_start" value="{{ curr_time }}">
-              <label for="repeat_start">Start Time</label>
-              <input type="time" id="repeat_end" name="repeat_end" value="{{ curr_time }}">
-              <label for="repeat_end">E
-                nd Time</label>
+          </form>
+        </div>
+      </div>
+      <div class="col-12">
+        <!-- <label for="repeat">Repeating</label> -->
+        <button class="btn btn-primary collapse-button" type="button" data-toggle="collapse" data-target="#repeat">
+          Schedule Repeating Time
+        </button>
+        <div style="display: flex;">
+          <form id="repeat" class="collapse" method="POST" action="{% url 'lights:outlets' %}">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-12">
+                <input type="radio" id="sunday" name="day6" value="1">
+                <label for="sunday">sunday</label>
+                <input type="radio" id="monday" name="day0" value="1">
+                <label for="monday">monday</label>
+                <input type="radio" id="tuesday" name="day1" value="1">
+                <label for="tuesday">tuesday</label>
+                <input type="radio" id="wednesday" name="day2" value="1">
+                <label for="wednesday">wednesday</label>
+                <input type="radio" id="thursday" name="day3" value="1">
+                <label for="thursday">thursday</label>
+                <input type="radio" id="friday" name="day4" value="1">
+                <label for="friday">friday</label>
+                <input type="radio" id="saturday" name="day5" value="1">
+                <label for="saturday">saturday</label>
+              </div>
+              <div class="col-12">
+                <input type="time" id="repeat_start" name="repeat_start" value="{{ curr_time }}">
+                <label for="repeat_start">Start Time</label>
+                <input type="time" id="repeat_end" name="repeat_end" value="{{ curr_time }}">
+                <label for="repeat_end">End Time</label>
+              </div>
+              <div class="col-12">
+                <input type="submit" class="btn btn-lg btn-secondary" value="Schedule Repeating Time"/>
+              </div>
             </div>
-            <div class="col-12">
-              <input type="submit" class="btn btn-lg btn-secondary" value="Schedule Repeating Time"/>
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
+      </div>
     </div>
 </div>
 {% endblock %}

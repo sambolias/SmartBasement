@@ -116,29 +116,66 @@ def outlets(request):
   outlets = Device.objects.filter(name="winter_outlets").first()
   now = datetime.datetime.now(timezone('US/Alaska'))
 
-  # can't directly compare datetime by date and time...
-  next_on = Schedule.objects.filter ( on_time__year__gte=now.year
-                                    , on_time__month__gte=now.month
-                                    , on_time__day__gte=now.day
-                                    , on_time__hour__gte=now.hour
-                                    ).first()
+  # check for any override and set checked for match
+  switched_on = Schedule.objects.filter(override_on = True)
+  switched_off = Schedule.objects.filter(override_off = True)
+  is_on = len(switched_on) > 0;
+  is_off = len(switched_off) > 0;
+  override_off = "checked" if is_off else ""
+  override_auto = "" if is_off or is_on else "checked"
+  override_on = "checked" if is_on else ""
+  powered_on = False
+  powered_off = False
 
-  next_msg = 'No on times have been scheduled'
-  if next_on:
-    next_on = next_on.on_time
-    next_msg = 'Next scheduled on time is ' + next_on.strftime("%Y-%m-%d %H:%M")
-  outlet_msg = 'Outlets are powered ' + ('on' if outlets.power else 'off')
-  #           M  T  W  T  F  S  S
-  day_bits = [0, 0, 0, 0, 0, 0, 0]
+  # check forms
   if request.method == 'POST':
-    for i in range (0, 7):
-      day_bits[i] = int(request.POST.get('day' + str(i), 0))
+    if request.POST.get('hidden-current'):
+      millenium = datetime.timedelta(days=365*1000)
+      # 0 = off 1 = auto = 2 on
+      # stupid django radio workaround...default to auto but will never be empty
+      switch_pos = request.POST.get('hidden-current', 1)
+      # check current (should have from above)
+      # if 0 add override_off from now to 1000yrs and remove any override_on
+      if int(switch_pos) == int(0) and not is_off:
+        schedule = Schedule(on_time=now, off_time=now + millenium, pin=26, override_on=False, override_off=True, repeating=False)
+        schedule.save()
+        override_off = "checked"
+        override_auto = ""
+        override_on = ""
+        powered_off = True
+        for s in switched_on:
+          s.delete()
+      # if 1 remove any override_ on or off
+      elif int(switch_pos) == int(1) and (is_on or is_off):
+        override_off = ""
+        override_auto = "checked"
+        override_on = ""
+        for s in switched_on:
+          s.delete()
+        for s in switched_off:
+          s.delete()
+      # if 2 reverse of 0
+      elif int(switch_pos) == int(2) and not is_on:
+        schedule = Schedule(on_time=now, off_time=now + millenium, pin=26, override_on=True, override_off=False, repeating=False)
+        schedule.save()
+        override_off = ""
+        override_auto = ""
+        override_on = "checked"
+        powered_on = True
+        for s in switched_off:
+          s.delete()
+
     if request.POST.get('single_date') and request.POST.get('single_start') and request.POST.get('single_end'):
       single_start = datetime.datetime.strptime(request.POST.get('single_date', '') + " " + request.POST.get('single_start', ''), "%Y-%m-%d %H:%M")
       single_end = datetime.datetime.strptime(request.POST.get('single_date', '') + " " + request.POST.get('single_end', ''), "%Y-%m-%d %H:%M")
-      schedule = Schedule(on_time=single_start, off_time=single_end, pin=26, override_on=True, override_off=False, repeating=False)
+      schedule = Schedule(on_time=single_start, off_time=single_end, pin=26, override_on=False, override_off=False, repeating=False)
       schedule.save()
+
     if request.POST.get('repeat_start') and request.POST.get('repeat_end'):
+      #           M  T  W  T  F  S  S
+      day_bits = [0, 0, 0, 0, 0, 0, 0]
+      for i in range (0, 7):
+        day_bits[i] = int(request.POST.get('day' + str(i), 0))
       for i in range (0, 7):
         start_time = datetime.datetime.strptime(request.POST.get('repeat_start', ''), "%H:%M").time()
         end_time = datetime.datetime.strptime(request.POST.get('repeat_end', ''), "%H:%M").time()
@@ -153,10 +190,28 @@ def outlets(request):
           schedule = Schedule(on_time=repeat_start, off_time=repeat_end, pin=26, override_on=False, override_off=False, repeating=True)
           schedule.save()
 
+  # setup context
+
+  # can't directly compare datetime by date and time...
+  next_on = Schedule.objects.filter ( on_time__year__gte=now.year
+                                    , on_time__month__gte=now.month
+                                    , on_time__day__gte=now.day
+                                    , on_time__hour__gte=now.hour
+                                    ).first()
+
+  next_msg = 'No on times have been scheduled'
+  if next_on:
+    next_on = next_on.on_time
+    next_msg = 'Next scheduled on time is ' + next_on.strftime("%Y-%m-%d %H:%M")
+  outlet_msg = 'Outlets are powered ' + ('on' if (outlets.power or powered_on) and not powered_off else 'off')
+
   context = { 'curr_time': now.strftime("%H:%M")
             , 'curr_date': now.strftime("%Y-%m-%d")
             , 'outlet': outlet_msg
             , 'next_on': next_msg
+            , 'override_off': override_off
+            , 'override_auto': override_auto
+            , 'override_on': override_on
             , 'baseTemplate': getBaseTemplate(request)
             , 'style': getStyle(request)
             }

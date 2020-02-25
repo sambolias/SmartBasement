@@ -109,3 +109,7 @@ iframe {
   height: 100%;
   width: 100%;
 }
+
+.collapse-button {
+  margin: 20px;
+}
