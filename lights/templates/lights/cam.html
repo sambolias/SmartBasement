@@ -71,7 +71,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
     function drawPreview(cid)
     {
-      var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+      var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"3\");'>more</i>";
       inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawFullScreen(\""+cid+"\");'>fullscreen</i>";
       inner += "<div class='cam-preview vertical-center'><div style='margin: auto;'>";
       inner += drawFeed(cid, "/substream");
@@ -84,7 +84,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
     function drawFullScreen(cid)
     {
-      var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"2\");'>more</i>";
+      var inner = " <i class='floating-btn back-cams material-icons themed' onclick='drawThumbs(\"3\");'>more</i>";
       inner += "<i class='floating-btn toggle-cam material-icons themed' onclick='drawPreview(\""+cid+"\");'>fullscreen_exit</i>";
       inner += "<div class='cam-fullscreen'>";
       inner += drawFeed(cid, "/stream");
