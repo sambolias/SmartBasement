@@ -47,7 +47,7 @@ window.addEventListener('DOMContentLoaded', function(){
         , "http://serie:testpw@206.174.113.240:8082/0"
         ];
 
-      if(!i.isNaN() && i < feeds.length)
+      if(!Number.isNaN(i) && i < feeds.length)
         return feeds[i];
     }
 
