@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "privacy": "hidden",
+    "name": "CamViewer",
+    "slug": "CamViewer",
+    "version": "1.0.1",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/cam-splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/cam-adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.sambo.cambro"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
