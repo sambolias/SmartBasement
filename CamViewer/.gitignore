@@ -14,3 +14,9 @@ cams.json
 
 # macOS
 .DS_Store
+
+#turtle
+@sambolias__CamViewer-keystore*
+package.turtle.json
+nginx.conf
+dist

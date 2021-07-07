@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/cam-adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.sambo.cambro"
+      "package": "com.sambo.cambro",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"

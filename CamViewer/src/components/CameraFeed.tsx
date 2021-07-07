@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { AppState, View, Dimensions, StyleSheet, AppStateStatus } from 'react-native'
+import { AppState, View, Dimensions, StyleSheet, AppStateStatus, Button } from 'react-native'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import WebView from 'react-native-webview'
 
 import { CamFeedProps } from '../types/Common';
+import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 
 const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
+  const webView = useRef<WebView>()
   const appState = useRef(AppState.currentState)
   const [styles, setStyles] = useState(StyleSheet.create({camView:{}}))
   const [source, setSource] = useState('')
@@ -34,7 +36,8 @@ const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
   const onResume = (nextAppState : AppStateStatus) => {
     if(appState.current.match('/inactive|background/') && nextAppState === 'active') {
       // set source state to re-render WebView
-      setSource(getSource())
+      // setSource(getSource())
+      setTimeout(() => webView.current?.reload(), 100)
     }
   }
 
@@ -68,34 +71,30 @@ const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
   }
 
   return (
-    // first attempt, gives 401 but probably because image doesn't support mjpeg
-    // <Image
-    //   style={{width: 128, height: 128}}
-    //   source={{
-    //     headers: {
-    //       Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-    //       AcceptEncoding: "gzip, deflate",
-    //       AcceptLanguage: "en-US,en;q=0.9",
-    //       Authorization: "Basic c2VyaWU6dGVzdHB3",
-    //       Connection: "keep-alive",
-    //       Host: "206.174.116.174:8081"
-    //     },
-    //     uri: "http://206.174.116.174:8081/1/current",
-    //     // uri: "http://serie:testpw@206.174.116.174:8081/1"
-    //   }}
-    //   onError={({nativeEvent}) => {
-    //     console.log(nativeEvent.error)
-    //   }}
-    //   onLoad={(ImageLoadEvent) => {
-    //     console.log(ImageLoadEvent.nativeEvent.uri)
-    //   }}
-    // />
+    /// TODO figure out how to get it to reload on error - how it is will cycle when it fails for reason
+    // TODO on error it should try to reset maybe once, some kind of debounce needed
     <View>
       <WebView
+        ref={(ref) => {if(ref) webView.current = ref}}
         style={styles.camView}
         containerStyle={styles.camView}
         source={{uri: source}}
+        onError={(err : WebViewErrorEvent) => {
+          console.log("error")
+          console.log(err.nativeEvent.description)
+          // setSource(getSource())
+          // setTimeout(() => webView.current?.reload(), 100)
+          // if(webView.current) console.log(webView.current)
+          // else console.log("no web view ref :/")
+        }}
+        onHttpError={({nativeEvent}) => {
+          console.log("http error")
+          console.log(nativeEvent.description)
+          // setSource(getSource())
+          // setTimeout(() => webView.current?.reload(), 100)
+        }}
       />
+      {/* <Button title="Reload" onPress={() => setTimeout(() => webView.current?.reload(), 100)} /> */}
     </View>
   )
 }
