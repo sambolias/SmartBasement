@@ -33,24 +33,20 @@ export const getCams = () => {
 export const updateCams = (camCreds: [CamFeedProps]) => {
   return async(dispatch: Dispatch, getState: () => [string]) => {
     camCreds.map(async (cred: CamFeedProps, index: number) => {
-      const uri = 'http://' + cred.host + '/' + cred.id + '/current'
+      const uri = `http://${cred.host}/${cred.id}/current`
+      const path = `${FileSystem.cacheDirectory}cam${index}.${Date.now()}.jpg`
       const encodedCred = base64.encode(cred.creds)
-      FileSystem.downloadAsync(uri, FileSystem.cacheDirectory + "cam" + index + ".jpg", {
+      FileSystem.downloadAsync(uri, path, {
         headers: {
           Authorization: `Basic ${encodedCred}`
         }
       }).then((result) => {
-        // console.log("success!")
-        // console.log(result.uri)
-        // return result.uri
-        // console.log(index)
         dispatch({
           type: ActionType.UpdateCams,
           index: index,
           payload: result.uri
         })
       }).catch((e) => {
-        // console.log("fail!")
         console.log(e)
         // TODO fallback image or empty string?
         // for now just return nothing, state stays the same

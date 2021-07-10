@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef } from 'react'
 import { AppState, View, Dimensions, StyleSheet, AppStateStatus, Button } from 'react-native'
 import * as ScreenOrientation from 'expo-screen-orientation';
 import WebView from 'react-native-webview'
+import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 
 import { CamFeedProps } from '../types/Common';
-import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 
 const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
   const webView = useRef<WebView>()
@@ -37,7 +37,9 @@ const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
     if(appState.current.match('/inactive|background/') && nextAppState === 'active') {
       // set source state to re-render WebView
       // setSource(getSource())
-      setTimeout(() => webView.current?.reload(), 100)
+      webView.current?.clearCache(true)
+      webView.current?.clearHistory()
+      webView.current?.reload()
     }
   }
 
@@ -81,20 +83,18 @@ const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
         source={{uri: source}}
         onError={(err : WebViewErrorEvent) => {
           console.log("error")
-          console.log(err.nativeEvent.description)
-          // setSource(getSource())
-          // setTimeout(() => webView.current?.reload(), 100)
-          // if(webView.current) console.log(webView.current)
-          // else console.log("no web view ref :/")
+          console.log(err.nativeEvent)
+          if(err.nativeEvent.code === -6) {
+            webView.current?.clearCache(true)
+            webView.current?.clearHistory()
+            setTimeout(() => webView.current?.reload(), 500)
+          }
         }}
         onHttpError={({nativeEvent}) => {
           console.log("http error")
-          console.log(nativeEvent.description)
-          // setSource(getSource())
-          // setTimeout(() => webView.current?.reload(), 100)
+          console.log(nativeEvent)
         }}
       />
-      {/* <Button title="Reload" onPress={() => setTimeout(() => webView.current?.reload(), 100)} /> */}
     </View>
   )
 }

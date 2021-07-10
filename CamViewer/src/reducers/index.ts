@@ -1,9 +1,9 @@
 import { combineReducers } from "redux"
 
 import camsReducer from './cams'
-
-// TODO store current viewed cam
+import currentReducer from './current'
 
 export const reducers = combineReducers ({
-  cams: camsReducer
+  cams: camsReducer,
+  current: currentReducer
 })

@@ -3,7 +3,9 @@ import { GetCamsAction, UpdateCamsAction } from "./cams";
 
 export enum ActionType {
   GetCams,
-  UpdateCams
+  UpdateCams,
+  GetCurrent,
+  SetCurrent
 }
 
 export type Action = GetCamsAction | UpdateCamsAction | AnyAction
