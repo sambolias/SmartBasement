@@ -1,77 +1,42 @@
-import React, { useEffect, useState, useRef } from 'react'
-import { AppState, View, Dimensions, StyleSheet, AppStateStatus, Button } from 'react-native'
-import * as ScreenOrientation from 'expo-screen-orientation';
+import React, { useEffect, useRef } from 'react'
+import { AppState, View, StyleSheet, AppStateStatus } from 'react-native'
 import WebView from 'react-native-webview'
 import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 
 import { CamFeedProps } from '../types/Common';
 
-const CamFeed = ({host, creds, id, stream_type}: CamFeedProps) => {
+const CamFeed = ({host, creds, id, height, width, stream_type}: CamFeedProps) => {
   const webView = useRef<WebView>()
   const appState = useRef(AppState.currentState)
-  const [styles, setStyles] = useState(StyleSheet.create({camView:{}}))
-  const [source, setSource] = useState('')
 
-  // set source on start or change (also onResume below)
-  useEffect(()=> {
-    setSource(getSource())
-  }, [host, id])
-
-  // set orientation on start
+  // fix webview on resume
   useEffect(() => {
-    // setSource(getSource())
-    orientStyles()
     AppState.addEventListener('change', onResume)
 
     return () => {
-      ScreenOrientation.removeOrientationChangeListeners()
       AppState.removeEventListener('change', onResume)
     }
   }, [])
-  // and on change
-  ScreenOrientation.addOrientationChangeListener(() => {
-    orientStyles()
-  })
 
   const onResume = (nextAppState : AppStateStatus) => {
     if(appState.current.match('/inactive|background/') && nextAppState === 'active') {
-      // set source state to re-render WebView
-      // setSource(getSource())
       webView.current?.clearCache(true)
       webView.current?.clearHistory()
       webView.current?.reload()
     }
   }
 
-  const getSource = () => {
-    let isTyped = stream_type !== undefined
-    return `http://${creds}@${host}/${id + (isTyped ? '/' + stream_type : '')}`
-  }
+  // set stream source based on props
+  const isTyped = stream_type !== undefined
+  const source = `http://${creds}@${host}/${id + (isTyped ? '/' + stream_type : '')}`
 
-  // set cam view orientation to maintain 640x480 aspect ratio
-  const orientStyles = () => {
-    const w = Dimensions.get("screen").width
-    const h = Dimensions.get("screen").height
-
-    let iw, ih = 0
-    if(w > h) { // landscape
-      ih = h
-      iw = h*640/480
-    } else { // portrait
-      iw = w
-      ih = w*480/640
+  const styles = StyleSheet.create({
+    camView: {
+      flex: 0,
+      width: width,
+      height: height
     }
-
-    const s = StyleSheet.create({
-      camView: {
-        flex: 0,
-        width: iw,
-        height: ih
-      }
-    })
-    setStyles(s)
-  }
-
+  })
   return (
     /// TODO figure out how to get it to reload on error - how it is will cycle when it fails for reason
     // TODO on error it should try to reset maybe once, some kind of debounce needed
