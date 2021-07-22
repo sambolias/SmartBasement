@@ -3,7 +3,7 @@
     "privacy": "hidden",
     "name": "CamViewer",
     "slug": "CamViewer",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "default",
     "icon": "./assets/icon.png",
     "splash": {

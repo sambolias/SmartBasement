@@ -5,16 +5,16 @@ import { ActionType } from "./types";
 
 export interface GetCurrentAction {
   type: ActionType.GetCurrent,
-  payload: number
+  payload: number[]
 }
 
 export interface SetCurrentAction {
   type: ActionType.SetCurrent,
-  payload: number
+  payload: number[]
 }
 
 export const getCurrent = () => {
-  return async(dispatch: Dispatch, getState: () => number) => {
+  return async(dispatch: Dispatch, getState: () => number[]) => {
     const cam = getState()
     dispatch({
       type: ActionType.GetCurrent,
@@ -23,11 +23,11 @@ export const getCurrent = () => {
   }
 }
 
-export const setCurrent = (index: number) => {
+export const setCurrent = (indexes: number[]) => {
   return async(dispatch: Dispatch) => {
     dispatch({
       type: ActionType.GetCurrent,
-      payload: index
+      payload: indexes
     })
   }
 }

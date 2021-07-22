@@ -1,6 +1,6 @@
 import { Action, ActionType } from '../actions'
 
-const reducer = (state: number = 0, action: Action) => {
+const reducer = (state: number[] = [0], action: Action) => {
   switch(action.type) {
     case ActionType.GetCurrent:
       return action.payload

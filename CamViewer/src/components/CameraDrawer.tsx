@@ -1,8 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { StyleSheet, View, DrawerLayoutAndroid, FlatList, Image, Pressable } from 'react-native'
 import { MaterialIcons } from '@expo/vector-icons';
-import { useEffect } from 'react'
-import { useRef } from 'react'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 
@@ -16,7 +14,7 @@ interface CameraDrawerProps {
   updateCams: Function,
   setCurrent: Function,
   cams: string[],
-  current: number,
+  current: number[],
   children: JSX.Element
 }
 
@@ -28,16 +26,13 @@ const CameraDrawer = ({ updateCams, setCurrent, cams, current, children }: Camer
     updateCams(camsConf)
   }, 5000)
 
-  useEffect(() => {
-    updateCams(camsConf)
-  }, [])
-
   return (
     <DrawerLayoutAndroid
       ref={drawer}
       drawerWidth={300}
       drawerPosition="left"
       onDrawerOpen={() => {
+        // update cams on drawer open
         update()
       }}
       renderNavigationView={() => (
@@ -50,9 +45,12 @@ const CameraDrawer = ({ updateCams, setCurrent, cams, current, children }: Camer
               <Pressable
                 style={[styles.container, {margin: 20, width: 168, height: 168, backgroundColor: '#252227', borderRadius: 25}]}
                 onPress={() => {
-                  if(index !== current) {
-                    setCurrent(index)
+                  // if multiple cams selected
+                  // or if not currently selected
+                  if(current.length > 1 || !current.includes(index)) {
+                    setCurrent([index])
                   }
+
                   drawer.current?.closeDrawer()
                 }}
               >
@@ -62,7 +60,16 @@ const CameraDrawer = ({ updateCams, setCurrent, cams, current, children }: Camer
               </Pressable>
             }
           />
-          <MaterialIcons.Button name="grid-view" onPress={() => console.log("pressed")} ></MaterialIcons.Button>
+          <MaterialIcons.Button
+            name="grid-view"
+            size={100}
+            backgroundColor="transparent"
+            onPress={() => {
+                setCurrent(camsConf.map(c => c.id))
+                drawer.current?.closeDrawer()
+              }
+            }
+          />
         </View>
         )
       }
