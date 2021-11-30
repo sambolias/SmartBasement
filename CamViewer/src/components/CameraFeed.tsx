@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { AppState, View, StyleSheet, AppStateStatus, ActivityIndicator } from 'react-native'
+import { AppState, View, StyleSheet, AppStateStatus, ActivityIndicator, Text } from 'react-native'
 import WebView from 'react-native-webview'
-import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes';
+import { WebViewErrorEvent } from 'react-native-webview/lib/WebViewTypes'
+
+import axios from 'axios'
+import httpAdapter from 'axios/lib/adapters/http'
+
+
+
 
 import _ from 'lodash'
 
@@ -20,6 +26,46 @@ const CamFeed = ({host, creds, id, height, width, stream_type}: CamFeedProps) =>
     return source
   }
   const [source, setSource] = useState(getSource())
+
+  useEffect(() => {
+    console.log("calling")
+    // axios stream doesn't work, ttry https://www.npmjs.com/package/buffered-xhr-stream or similar
+    // axios.get(source, {responseType: 'stream', adapter: httpAdapter,
+    // // axios.get(source, {adapter: httpAdapter,
+    //   headers: {
+    //     Authorization: "Basic c2VyaWU6dGVzdHB3",
+    //     ContentType: "multipart/x-mixed-replace; boundary=BoundaryString"
+    //     }})
+    // .then((response) => {
+    //   console.log("good resp")
+    // const stream = response.data;
+    // stream.on('data', (chunk /* chunk is an ArrayBuffer */) => {
+    //     console.log("chunk read")
+    //   })
+    // }).catch((e) => {
+    //   console.log(e)
+    // })
+    fetch(source, {
+      headers: {
+        Authorization: "Basic c2VyaWU6dGVzdHB3",
+        ContentType: "multipart/x-mixed-replace; boundary=BoundaryString"
+      }
+
+    })
+    .then((response) => {
+      console.log(response)
+      if(!response.ok) {
+        console.log("afu")
+      }
+      if(response.body) {
+        console.log("has body")
+      }
+    })
+    .catch((e) => {
+      console.log(e)
+      console.log("error")
+    })
+  }, [source])
 
   // // fix failed webview on resume
   // useEffect(() => {
@@ -63,13 +109,20 @@ const CamFeed = ({host, creds, id, height, width, stream_type}: CamFeedProps) =>
       flex: 0,
       width: width,
       height: height
-    }
+    },
+      backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
   })
   return (
     /// TODO figure out how to get it to reload on error - how it is will cycle when it fails for reason
     // TODO on error it should try to reset maybe once, some kind of debounce needed
     <View>
-      <WebView
+      {/* <WebView
         ref={(ref) => {if(ref) webView.current = ref}}
         style={styles.camView}
         containerStyle={styles.camView}
@@ -93,7 +146,10 @@ const CamFeed = ({host, creds, id, height, width, stream_type}: CamFeedProps) =>
             reload()
           }
         }}
-      />
+      /> */}
+      <Text style={{color: "white"}}>Player</Text>
+
+
     </View>
   )
 }
